@@ -53,13 +53,19 @@
                             <h5 class="fw-bold mb-0">{{ $receta->titulo }}</h5>
                             <span class="badge bg-light text-dark border"><i class="bi bi-clock"></i> {{ $receta->tiempo_coccion }} min</span>
                         </div>
-                        <div class="d-flex gap-2">
-                            <a href="#" class="btn btn-primary flex-grow-1 rounded-pill text-white text-decoration-none">Ver Receta</a>
+                        
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-outline-danger rounded-pill w-50">
+                                <i class="bi bi-heart"></i> Me gusta
+                            </button>
+                            
+                            <a href="{{ route('receta.show', $receta->id) }}" class="btn btn-success rounded-pill w-50 text-white text-decoration-none">
+                                Ver paso a paso &rarr;
+                            </a>
                         </div>
-                    </div>
+                        </div>
                 </article>
                 @endforeach
-
             </div>
         </div>
 
