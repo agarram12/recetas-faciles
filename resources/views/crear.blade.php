@@ -13,7 +13,16 @@
                     <div class="text-center mb-5">
                         <h3 class="titulo-verde"><i class="bi bi-journal-plus"></i> Comparte tu receta</h3>
                     </div>
-                    
+                    <!-- Mostrar errores de validación arriba del formulario -->
+                    @if ($errors->any())
+                        <div class="alert alert-danger" style="border-radius: 12px;">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form action="{{ route('receta.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
