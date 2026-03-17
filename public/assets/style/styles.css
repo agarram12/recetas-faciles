@@ -3,11 +3,12 @@
 @keyframes animacionUsuario {
     0% {
         opacity: 0;
-        transform: rotateY(90deg); 
+        transform: rotateY(90deg);
     }
+
     100% {
         opacity: 1;
-        transform: rotateY(0deg); 
+        transform: rotateY(0deg);
     }
 }
 
@@ -254,4 +255,63 @@ a:hover {
         margin-top: 10px;
     }
 
+}
+
+/* Estilos páginas crear */
+.form-control,
+.form-select {
+    background-color: #f8f9fa !important;
+    border: 1px solid #f8f9fa !important;
+    border-radius: 8px !important;
+    padding: 12px 15px !important;
+    box-shadow: none !important;
+    color: #495057 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border: 1px solid #729c48 !important;
+    background-color: #fff !important;
+}
+
+.form-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.btn-verde {
+    background-color: #729c48;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-verde:hover {
+    background-color: #5c8038;
+    color: white;
+}
+
+.btn-outline-gris {
+    border: 1px solid #ced4da;
+    color: #6c757d;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-weight: 600;
+    background: transparent;
+    text-decoration: none;
+}
+
+.btn-outline-gris:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.titulo-verde {
+    color: #729c48;
+    font-weight: 800;
 }
