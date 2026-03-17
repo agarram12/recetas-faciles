@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecetaController;
+use App\Http\Controllers\InteraccionController;
 // feed principal
 Route::get('/', [RecetaController::class, 'index']);
 // Crear una receta
@@ -13,6 +14,6 @@ Route::put('/receta/{id}', [RecetaController::class, 'update'])->name('receta.up
 // Borrar una receta
 Route::delete('/receta/{id}', [RecetaController::class, 'destroy'])->name('receta.destroy');
 // Añadir comentarios a una receta
-Route::post('/receta/{id}/comentar', [RecetaController::class, 'comentar'])->name('comentario.store');
+Route::post('/receta/{id}/comentar', [InteraccionController::class, 'comentar'])->name('comentario.store');
 // Detalle de las recetas (dejar siempre al final)
 Route::get('/receta/{id}', [RecetaController::class, 'show'])->name('receta.show');
