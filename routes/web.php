@@ -13,11 +13,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/dashboard', function () {
     return redirect('/');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -29,3 +24,14 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/receta/crear', [App\Http\Controllers\RecetaController::class, 'create'])->name('receta.create');
+Route::post('/receta', [App\Http\Controllers\RecetaController::class, 'store'])->name('receta.store');
+Route::get('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'show'])->name('receta.show');
+Route::get('/receta/{id}/editar', [App\Http\Controllers\RecetaController::class, 'edit'])->name('receta.edit');
+Route::put('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'update'])->name('receta.update');
+Route::delete('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'destroy'])->name('receta.destroy');
+Route::post('/receta/{id}/valorar', [App\Http\Controllers\InteraccionController::class, 'valorar'])->name('receta.valorar');
+Route::post('/receta/{id}/comentario', [App\Http\Controllers\InteraccionController::class, 'comentar'])->name('comentario.store');
+Route::get('/', [App\Http\Controllers\RecetaController::class, 'index'])->name('inicio');
+Route::get('/', [App\Http\Controllers\RecetaController::class, 'index'])->name('inicio');

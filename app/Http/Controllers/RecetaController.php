@@ -179,10 +179,8 @@ class RecetaController extends Controller
             'categoria_id' => $request->categoria_id,
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
+            'tiempo_preparacion' => $request->tiempo_coccion,
             'pasos' => $pasos_texto_unificado,
-            'url_imagen' => $ruta_imagen_bd,
-            'tiempo_coccion' => $request->tiempo_coccion,
-            'dificultad' => $request->dificultad
         ]);
 
         return redirect('/');

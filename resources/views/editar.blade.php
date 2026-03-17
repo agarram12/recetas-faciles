@@ -70,7 +70,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">TIEMPO (MIN)</label>
-                                <input type="number" class="form-control" name="tiempo_coccion" value="{{ $receta->tiempo_coccion }}" required>
+                                <input type="number" class="form-control" name="tiempo_coccion" value="{{ $receta->tiempo_preparacion }}" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">DIFICULTAD</label>

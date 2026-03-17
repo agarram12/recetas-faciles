@@ -10,7 +10,7 @@
                 <div class="card mb-3 shadow-sm border-0">
                     <div class="card-body text-center">
                         <img src="{{ asset($usuario_actual->avatar) }}" class="rounded-circle mb-3 border border-3 border-white shadow" width="80" height="80" style="object-fit: cover;">
-                        <h5 class="card-title fw-bold text-success">{{ $usuario_actual->nombre_usuario }}</h5>
+                        <h5 class="card-title fw-bold text-success">{{ $usuario_actual->name }}</h5>
                     </div>
                 </div>
 
@@ -75,7 +75,7 @@
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="fw-bold mb-0 text-truncate" style="max-width: 70%;">{{ $receta->titulo }}</h6>
-                                <span class="badge bg-light text-dark border"><i class="bi bi-clock"></i> {{ $receta->tiempo_coccion }}'</span>
+                                <span class="badge bg-light text-dark border"><i class="bi bi-clock"></i> {{ $receta->tiempo_preparacion }}'</span>
                             </div>
 
                             <div class="d-flex gap-2 mt-auto">

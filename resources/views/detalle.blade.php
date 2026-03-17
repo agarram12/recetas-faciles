@@ -38,7 +38,7 @@
                     <p class="text-muted"><i class="bi bi-person-circle"></i> Por <strong>{{ $receta->autor }}</strong></p>
 
                     <div class="d-flex gap-4 mb-4 bg-light p-3 rounded" style="border-radius: 12px !important;">
-                        <div class="fw-bold text-secondary"><i class="bi bi-clock text-success"></i> {{ $receta->tiempo_coccion }} min</div>
+                        <div class="fw-bold text-secondary"><i class="bi bi-clock text-success"></i> {{ $receta->tiempo_preparacion }}' min</div>
                         <div class="fw-bold text-secondary"><i class="bi bi-bar-chart text-success"></i> {{ $receta->dificultad }}</div>
                     </div>
 

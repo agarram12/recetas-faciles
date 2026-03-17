@@ -16,26 +16,45 @@
         
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
             <div class="container">
-                <a class="navbar-brand fw-bold" href="/" style="color: #729c48;">
-                    <i class="bi bi-egg-fried"></i> Recetas Fáciles
-                </a>
                 
-                <div class="ms-auto d-flex align-items-center gap-3">
-                    @auth
-                        <span class="fw-bold" style="color: #729c48;">
-                            <i class="bi bi-person-circle"></i> Hola, {{ Auth::user()->name }}
-                        </span>
-                        
-                        <form method="POST" action="{{ route('logout') }}" class="m-0">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-                                Cerrar sesión
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/" style="color: #729c48;">
+                    <img src="{{ asset('assets/img/logo.png') }}" alt="Logo" height="40" style="object-fit: contain;">
+                    Recetas Fáciles
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContenido" aria-controls="navbarContenido" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarContenido">
+                    
+                    <form class="d-none d-md-flex mx-auto my-2 my-lg-0" style="width: 100%; max-width: 400px;" action="/" method="GET">
+                        <div class="input-group">
+                            <input type="text" name="buscar" class="form-control border-end-0 bg-light" placeholder="Buscar recetas, ingredientes..." style="border-radius: 20px 0 0 20px; border-color: #ced4da;" value="{{ request('buscar') }}">
+                            <button class="btn border-start-0 bg-light" type="submit" style="border-radius: 0 20px 20px 0; border-color: #ced4da;">
+                                <i class="bi bi-search text-muted"></i>
                             </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" style="border-color: #729c48; color: #729c48;">Iniciar Sesión</a>
-                        <a href="{{ route('register') }}" class="btn btn-sm rounded-pill px-3 text-white" style="background-color: #729c48;">Registrarse</a>
-                    @endauth
+                        </div>
+                    </form>
+
+                    <div class="ms-auto d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                        @auth
+                            <span class="fw-bold text-nowrap" style="color: #729c48;">
+                                <i class="bi bi-person-circle"></i> Hola, {{ Auth::user()->name }}
+                            </span>
+                            
+                            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                    Cerrar sesión
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3" style="border-color: #729c48; color: #729c48;">Iniciar Sesión</a>
+                            <a href="{{ route('register') }}" class="btn btn-sm rounded-pill px-3 text-white" style="background-color: #729c48;">Registrarse</a>
+                        @endauth
+                    </div>
+
                 </div>
             </div>
         </nav>
