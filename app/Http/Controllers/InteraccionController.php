@@ -26,4 +26,16 @@ class InteraccionController extends Controller
         // Volvemos a la receta
         return redirect()->route('receta.show', $id);
     }
+
+    public function valorar(Request $request, $id)
+    {
+        $request->validate(['puntuacion' => 'required|integer|between:1,5']);
+
+        DB::table('valoraciones')->updateOrInsert(
+            ['usuario_id' => 1, 'receta_id' => $id],
+            ['puntuacion' => $request->puntuacion]
+        );
+
+        return redirect()->back();
+    }
 }

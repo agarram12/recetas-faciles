@@ -1,19 +1,31 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RecetaController;
-use App\Http\Controllers\InteraccionController;
-// feed principal
-Route::get('/', [RecetaController::class, 'index']);
-// Crear una receta
-Route::get('/crear', [RecetaController::class, 'create'])->name('receta.create');
-Route::post('/crear', [RecetaController::class, 'store'])->name('receta.store');
-// Editar una receta
-Route::get('/receta/{id}/editar', [RecetaController::class, 'edit'])->name('receta.edit');
-Route::put('/receta/{id}', [RecetaController::class, 'update'])->name('receta.update');
-// Borrar una receta
-Route::delete('/receta/{id}', [RecetaController::class, 'destroy'])->name('receta.destroy');
-// Añadir comentarios a una receta
-Route::post('/receta/{id}/comentar', [InteraccionController::class, 'comentar'])->name('comentario.store');
-// Detalle de las recetas (dejar siempre al final)
-Route::get('/receta/{id}', [RecetaController::class, 'show'])->name('receta.show');
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return redirect('/');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

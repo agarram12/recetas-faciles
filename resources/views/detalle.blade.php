@@ -13,6 +13,27 @@
                         <h2 class="fw-bold mb-0" style="color: #333;">{{ $receta->titulo }}</h2>
                         <span class="badge px-3 py-2 rounded-pill" style="background-color: #729c48; color: white;">{{ $receta->categoria }}</span>
                     </div>
+                    <div class="d-flex align-items-center gap-2 mt-2 mb-3">
+                        <div class="text-warning fs-5">
+                            @for($i = 1; $i <= 5; $i++)
+                                <i class="bi {{ $i <= round($media ?? 0) ? 'bi-star-fill' : 'bi-star' }}"></i>
+                            @endfor
+                        </div>
+                        <span class="text-muted fw-bold">({{ number_format($media ?? 0, 1) }})</span>
+
+                        <form action="{{ route('receta.valorar', $receta->id) }}" method="POST" class="ms-3 d-flex align-items-center">
+                            @csrf
+                            <select name="puntuacion" class="form-select form-select-sm border-0 bg-light me-2" style="width: auto; cursor: pointer;" required>
+                                <option value="" disabled selected>Puntuar...</option>
+                                <option value="5">5⭐ Increíble</option>
+                                <option value="4">4⭐ Muy buena</option>
+                                <option value="3">3⭐ Normal</option>
+                                <option value="2">2⭐ Regular</option>
+                                <option value="1">1⭐ Mala</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3">Votar</button>
+                        </form>
+                    </div>
 
                     <p class="text-muted"><i class="bi bi-person-circle"></i> Por <strong>{{ $receta->autor }}</strong></p>
 
@@ -57,22 +78,23 @@
     <hr class="my-5" style="border-color: #e9ecef;">
 
     <div class="row justify-content-center mb-5">
-        <div class="col-lg-10">
+        <div class="col-lg-8">
             <h4 class="fw-bold mb-4" style="color: #729c48;">
                 <i class="bi bi-chat-dots"></i> Comentarios ({{ count($comentarios) }})
             </h4>
 
             <div class="card border-0 shadow-sm mb-5" style="border-radius: 16px; background-color: #f8f9fa;">
-                <div class="card-body p-4">
+                <div class="card-body p-3">
                     <form action="{{ route('comentario.store', $receta->id) }}" method="POST">
                         @csrf
                         <div class="d-flex gap-3">
-                            <img src="{{ asset($comentario->avatar) }}"
+                            <img src="{{ asset('assets/img/usuario1.png') }}"
                                 class="rounded-circle shadow-sm"
                                 width="50"
                                 height="50"
                                 style="object-fit: cover;"
-                                alt="Avatar">
+                                alt="Tu Avatar"
+                                onerror="this.src='{{ asset('assets/img/logo.png') }}'">
 
                             <div class="w-100">
                                 <textarea class="form-control border-0 mb-2 p-3 shadow-sm" name="contenido" rows="2" placeholder="¿Qué te ha parecido esta receta? Deja tu comentario..." required style="border-radius: 12px; resize: none;"></textarea>

@@ -11,12 +11,13 @@ class RecetaController extends Controller
     public function index()
     {
         $recetas = DB::table('recetas')
-            ->join('usuarios', 'recetas.usuario_id', '=', 'usuarios.id')
-            ->select('recetas.*', 'usuarios.nombre_usuario as autor', 'usuarios.avatar')
-            ->orderBy('recetas.id', 'desc')
+            ->join('users', 'recetas.usuario_id', '=', 'users.id')
+            ->join('categorias', 'recetas.categoria_id', '=', 'categorias.id')
+            ->select('recetas.*', 'users.name as autor', 'users.avatar', 'categorias.nombre as categoria')
+            ->orderBy('recetas.created_at', 'desc')
             ->get();
 
-        $usuario_actual = DB::table('usuarios')->where('id', 1)->first();
+        $usuario_actual = DB::table('users')->where('id', 1)->first();
 
         return view('index', [
             'recetas' => $recetas,
@@ -81,9 +82,9 @@ class RecetaController extends Controller
     public function show($id)
     {
         $receta = DB::table('recetas')
-            ->join('usuarios', 'recetas.usuario_id', '=', 'usuarios.id')
+            ->join('users', 'recetas.usuario_id', '=', 'users.id')
             ->join('categorias', 'recetas.categoria_id', '=', 'categorias.id')
-            ->select('recetas.*', 'usuarios.nombre_usuario as autor', 'usuarios.avatar', 'categorias.nombre as categoria')
+            ->select('recetas.*', 'users.name as autor', 'users.avatar', 'categorias.nombre as categoria')
             ->where('recetas.id', $id)
             ->first();
 
@@ -92,8 +93,8 @@ class RecetaController extends Controller
         }
 
         $comentarios = DB::table('comentarios')
-            ->join('usuarios', 'comentarios.usuario_id', '=', 'usuarios.id')
-            ->select('comentarios.*', 'usuarios.nombre_usuario', 'usuarios.avatar')
+            ->join('users', 'comentarios.usuario_id', '=', 'users.id')
+            ->select('comentarios.*', 'users.name as nombre_usuario', 'users.avatar')
             ->where('comentarios.receta_id', $id)
             ->orderBy('comentarios.created_at', 'desc')
             ->get();

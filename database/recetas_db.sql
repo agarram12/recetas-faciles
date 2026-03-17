@@ -1,10 +1,13 @@
-CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_usuario VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+CREATE TABLE users (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    email_verified_at TIMESTAMP NULL DEFAULT NULL,
     password VARCHAR(255) NOT NULL,
-    avatar VARCHAR(255) DEFAULT 'assets/img/usuario1.png',
-    biografia TEXT
+    avatar VARCHAR(255) DEFAULT 'assets/img/logo.png',
+    remember_token VARCHAR(100) NULL DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE categorias (
@@ -23,7 +26,7 @@ CREATE TABLE recetas (
     url_imagen VARCHAR(255) DEFAULT 'assets/img/logo.png',
     tiempo_coccion INT NOT NULL,
     dificultad ENUM('Fácil', 'Media', 'Difícil') DEFAULT 'Media',
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE
 );
 
@@ -46,8 +49,8 @@ CREATE TABLE comentarios (
     usuario_id INT NOT NULL,
     receta_id INT NOT NULL,
     contenido TEXT NOT NULL,
-    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (receta_id) REFERENCES recetas(id) ON DELETE CASCADE
 );
 
@@ -56,7 +59,7 @@ CREATE TABLE valoraciones (
     usuario_id INT NOT NULL,
     receta_id INT NOT NULL,
     puntuacion INT CHECK (puntuacion BETWEEN 1 AND 5),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (receta_id) REFERENCES recetas(id) ON DELETE CASCADE
 );
 
@@ -65,11 +68,11 @@ CREATE TABLE favoritos (
     receta_id INT NOT NULL,
     fecha_guardado DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (usuario_id, receta_id),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (receta_id) REFERENCES recetas(id) ON DELETE CASCADE
 );
 
-INSERT INTO usuarios (nombre_usuario, email, password, biografia) VALUES 
+INSERT INTO users (nombre_usuario, email, password, biografia) VALUES 
 ('Antonio Cocinitas', 'antonio@email.com', '1234', 'Amante de lo tradicional.'),
 ('María Chef', 'maria@email.com', '1234', 'Especialista en postres.'),
 ('VeganLife', 'vegan@email.com', '1234', 'Recetas 100% plant-based.'),
