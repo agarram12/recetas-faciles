@@ -33,10 +33,8 @@ class RecetaController extends Controller
     // Guardar la imagen de la receta
     public function store(Request $request)
     {
-        // Añadir una imagen por defecto por si el usuario no sube ninguna
-        $ruta_imagen_bd = 'assets/img/logo.png';
+        $ruta_imagen_bd = 'assets/img/logo.png'; // Imagen por defecto
 
-        // Guardar la foto real
         if ($request->hasFile('url_imagen')) {
             $file = $request->file('url_imagen');
             $nombre_archivo = time() . '_' . $file->getClientOriginalName();
@@ -44,12 +42,16 @@ class RecetaController extends Controller
             $ruta_imagen_bd = 'assets/img/' . $nombre_archivo;
         }
 
-        // Insertarla en la BBDD
+        $pasos_array = $request->pasos; 
+        $pasos_texto_unificado = implode('. ', array_filter($pasos_array)) . '.';
+
+        // Insertar en la BD
         DB::table('recetas')->insert([
             'usuario_id' => 1,
             'categoria_id' => $request->categoria_id,
             'titulo' => $request->titulo,
-            'pasos' => $request->pasos,
+            'descripcion' => $request->descripcion,
+            'pasos' => $pasos_texto_unificado, 
             'url_imagen' => $ruta_imagen_bd,
             'tiempo_coccion' => $request->tiempo_coccion,
             'dificultad' => $request->dificultad
@@ -73,5 +75,13 @@ class RecetaController extends Controller
         }
 
         return view('detalle', ['receta' => $receta]);
+    }
+
+    public function destroy($id)
+    {
+        // Se busca por ID y se borra
+        DB::table('recetas')->where('id', $id)->delete();
+        // volver a inicio
+        return redirect('/');
     }
 }
