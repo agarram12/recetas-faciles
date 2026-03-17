@@ -165,6 +165,25 @@ a:hover {
     color: #fff;
 }
 
+.btn-success {
+    background-color: #729c48 !important;
+    border-color: #729c48 !important;
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: #5c8038 !important;
+    border-color: #5c8038 !important;
+}
+
+.text-success {
+    color: #729c48 !important;
+}
+
+.bg-success {
+    background-color: #729c48 !important;
+}
+
 .text-danger {
     color: var(--brand-cta) !important;
 }
