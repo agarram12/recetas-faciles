@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class RecetaController extends Controller
 {
+    // Mostrar el feed
     public function index()
     {
         $recetas = DB::table('recetas')
@@ -15,9 +16,49 @@ class RecetaController extends Controller
             ->orderBy('recetas.id', 'desc')
             ->get();
 
-        return view('index', ['recetas' => $recetas]);
+        $usuario_actual = DB::table('usuarios')->where('id', 1)->first();
+
+        return view('index', [
+            'recetas' => $recetas,
+            'usuario_actual' => $usuario_actual
+        ]);
     }
 
+    // Formulario para crear una receta
+    public function create()
+    {
+        return view('crear');
+    }
+
+    // Guardar la imagen de la receta
+    public function store(Request $request)
+    {
+        // Añadir una imagen por defecto por si el usuario no sube ninguna
+        $ruta_imagen_bd = 'assets/img/logo.png';
+
+        // Guardar la foto real
+        if ($request->hasFile('url_imagen')) {
+            $file = $request->file('url_imagen');
+            $nombre_archivo = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/img'), $nombre_archivo);
+            $ruta_imagen_bd = 'assets/img/' . $nombre_archivo;
+        }
+
+        // Insertarla en la BBDD
+        DB::table('recetas')->insert([
+            'usuario_id' => 1,
+            'categoria_id' => $request->categoria_id,
+            'titulo' => $request->titulo,
+            'pasos' => $request->pasos,
+            'url_imagen' => $ruta_imagen_bd,
+            'tiempo_coccion' => $request->tiempo_coccion,
+            'dificultad' => $request->dificultad
+        ]);
+
+        return redirect('/');
+    }
+
+    // Mostrar los detalles de una receta
     public function show($id)
     {
         $receta = DB::table('recetas')
