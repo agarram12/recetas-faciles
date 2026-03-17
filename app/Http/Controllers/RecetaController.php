@@ -60,7 +60,7 @@ class RecetaController extends Controller
             $ruta_imagen_bd = 'assets/img/' . $nombre_archivo;
         }
 
-        $pasos_array = $request->pasos; 
+        $pasos_array = $request->pasos;
         $pasos_texto_unificado = implode('. ', array_filter($pasos_array)) . '.';
 
         // Insertar en la BD
@@ -69,7 +69,7 @@ class RecetaController extends Controller
             'categoria_id' => $request->categoria_id,
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
-            'pasos' => $pasos_texto_unificado, 
+            'pasos' => $pasos_texto_unificado,
             'url_imagen' => $ruta_imagen_bd,
             'tiempo_coccion' => $request->tiempo_coccion,
             'dificultad' => $request->dificultad
@@ -78,7 +78,6 @@ class RecetaController extends Controller
         return redirect('/');
     }
 
-    // Mostrar los detalles de una receta
     public function show($id)
     {
         $receta = DB::table('recetas')
@@ -92,7 +91,22 @@ class RecetaController extends Controller
             abort(404);
         }
 
-        return view('detalle', ['receta' => $receta]);
+        $comentarios = DB::table('comentarios')
+            ->join('usuarios', 'comentarios.usuario_id', '=', 'usuarios.id')
+            ->select('comentarios.*', 'usuarios.nombre_usuario', 'usuarios.avatar')
+            ->where('comentarios.receta_id', $id)
+            ->orderBy('comentarios.created_at', 'desc')
+            ->get();
+
+        $media = DB::table('valoraciones')
+            ->where('receta_id', $id)
+            ->avg('puntuacion') ?? 0;
+
+        return view('detalle', [
+            'receta' => $receta,
+            'comentarios' => $comentarios,
+            'media' => $media
+        ]);
     }
 
     public function destroy($id)
