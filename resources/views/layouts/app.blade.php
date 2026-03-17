@@ -15,8 +15,7 @@
 </head>
 
 <body class="font-sans antialiased" style="background-color: #f8f9fa;">
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top" style="z-index: 1050;">
         <div class="container">
 
             <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/" style="color: #729c48;">

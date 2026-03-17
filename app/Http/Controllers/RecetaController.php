@@ -4,24 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Receta;
 
 class RecetaController extends Controller
 {
     // Mostrar el feed
-    public function index()
+    public function index(Request $request)
     {
-        $recetas = DB::table('recetas')
-            ->join('users', 'recetas.usuario_id', '=', 'users.id')
-            ->join('categorias', 'recetas.categoria_id', '=', 'categorias.id')
-            ->select('recetas.*', 'users.name as autor', 'users.avatar', 'categorias.nombre as categoria')
-            ->orderBy('recetas.created_at', 'desc')
-            ->get();
+        $buscar = $request->input('buscar');
+        $query = Receta::with(['autor', 'categoria']);
 
-        $usuario_actual = DB::table('users')->where('id', 1)->first();
+        if ($buscar) {
+            $query->where('titulo', 'LIKE', '%' . $buscar . '%')
+                  ->orWhere('descripcion', 'LIKE', '%' . $buscar . '%')
+                  // Buscamos dentro de la relación "categoria"
+                  ->orWhereHas('categoria', function($q) use ($buscar) {
+                      $q->where('nombre', 'LIKE', '%' . $buscar . '%');
+                  });
+        }
+
+        $recetas = $query->orderBy('created_at', 'desc')->get();
+        $populares = Receta::withAvg('valoraciones', 'puntuacion')
+            ->orderBy('valoraciones_avg_puntuacion', 'desc')
+            ->limit(3)
+            ->get();
 
         return view('index', [
             'recetas' => $recetas,
-            'usuario_actual' => $usuario_actual
+            'populares' => $populares,
+            'buscar' => $buscar
         ]);
     }
 

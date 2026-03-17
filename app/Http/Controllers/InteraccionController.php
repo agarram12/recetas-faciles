@@ -38,4 +38,11 @@ class InteraccionController extends Controller
 
         return redirect()->back();
     }
+
+    public function toggleFavorito(Request $request, $id)
+    {
+        $receta = \App\Models\Receta::findOrFail($id);
+        $request->user()->favoritos()->toggle($receta->id);
+        return back();
+    }
 }
