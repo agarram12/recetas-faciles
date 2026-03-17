@@ -51,6 +51,16 @@
                                     <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">{{ $receta->autor }}</h6>
                                 </div>
                             </div>
+
+                            @if($receta->usuario_id == $usuario_actual->id)
+                            <form action="{{ route('receta.destroy', $receta->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar esta receta? No hay vuelta atrás.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-link text-danger p-0 border-0 text-decoration-none">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+                            @endif
                         </div>
 
                         <div class="card-body p-0">
