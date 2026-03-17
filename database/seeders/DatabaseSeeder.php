@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +12,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // buscar el archivo SQL con la estructura y datos de prueba
+        $ruta_script = database_path('recetas_db.sql');
+        // obtener contenido del archivo SQL
+        $sql = file_get_contents($ruta_script);
+        // ejecución
+        DB::unprepared($sql);
+        // mensaje de éxito
+        $this->command->info('BBDD cargada con éxito');
     }
 }
