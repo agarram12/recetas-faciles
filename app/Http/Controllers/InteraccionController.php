@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class InteraccionController extends Controller
 {
-    // Guardar un comentario (RF-31)
     public function comentar(Request $request, $id)
     {
         $request->validate([
@@ -18,7 +17,7 @@ class InteraccionController extends Controller
         ]);
 
         DB::table('comentarios')->insert([
-            'usuario_id' => 1, // Simulamos ser el Usuario 1 de momento
+            'usuario_id' => 1,
             'receta_id' => $id,
             'contenido' => $request->contenido,
             'created_at' => now()
