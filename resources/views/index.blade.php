@@ -107,10 +107,13 @@
                             </div>
 
                             <div class="d-flex gap-2 mt-auto">
-                                
+
+                                <a href="{{ route('receta.show', $receta->id) }}" class="btn btn-outline-success btn-sm rounded-pill w-50">
+                                    <i class="bi bi-eye"></i> Ver
+                                </a>
                                 @auth
                                     @php
-                                        $esFavorito = Auth::user()->favoritos->contains($receta->id);
+                                        $esFavorito = auth()->user()->recetasFavoritas()->where('receta_id', $receta->id)->exists();
                                     @endphp
                                     <form action="{{ route('receta.favorito', $receta->id) }}" method="POST" class="w-50 m-0">
                                         @csrf
@@ -123,9 +126,7 @@
                                         <i class="bi bi-heart"></i>
                                     </a>
                                 @endauth
-                                <a href="{{ route('receta.show', $receta->id) }}" class="btn btn-sm rounded-pill w-50 text-white text-decoration-none" style="background-color: #729c48;">
-                                    Ver &rarr;
-                                </a>
+
                             </div>
                         </div>
                     </article>

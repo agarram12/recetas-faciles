@@ -59,12 +59,11 @@
                         <div class="row g-4 mb-5">
                             <div class="col-md-4">
                                 <label class="form-label">CATEGORÍA</label>
-                                <select class="form-select" name="categoria_id">
-                                    <option value="1">Tradicional</option>
-                                    <option value="2">Postres</option>
-                                    <option value="3">Vegano</option>
-                                    <option value="4">Carnes</option>
-                                    <option value="5">Sopas y Cremas</option>
+                                <select class="form-select" name="categoria_id" required>
+                                    <option value="" disabled selected>Selecciona una categoría...</option>
+                                    @foreach($categorias as $cat)
+                                        <option value="{{ $cat->id }}">{{ $cat->nombre }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             

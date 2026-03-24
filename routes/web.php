@@ -31,8 +31,8 @@ Route::get('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'show'
 Route::get('/receta/{id}/editar', [App\Http\Controllers\RecetaController::class, 'edit'])->name('receta.edit');
 Route::put('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'update'])->name('receta.update');
 Route::delete('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'destroy'])->name('receta.destroy');
-Route::post('/receta/{id}/valorar', [App\Http\Controllers\InteraccionController::class, 'valorar'])->name('receta.valorar');
-Route::post('/receta/{id}/comentario', [App\Http\Controllers\InteraccionController::class, 'comentar'])->name('comentario.store');
+Route::post('/receta/{id}/valorar', [App\Http\Controllers\InteraccionController::class, 'valorar'])->name('receta.valorar')->middleware('auth');
+Route::post('/receta/{id}/comentario', [App\Http\Controllers\InteraccionController::class, 'comentar'])->name('comentario.store')->middleware('auth');
 Route::post('/receta/{receta}/favorito', [App\Http\Controllers\InteraccionController::class, 'toggleFavorito'])->name('receta.favorito')->middleware('auth');
 
 

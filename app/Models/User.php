@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
     ];
 
     /**
@@ -40,15 +41,11 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
-    public function recetas()
+    public function recetasFavoritas()
     {
-        return $this->hasMany(Receta::class, 'usuario_id');
-    }
-
-    public function favoritos()
-    {
-        return $this->belongsToMany(Receta::class, 'favoritos', 'usuario_id', 'receta_id');
+        return $this->belongsToMany(\App\Models\Receta::class, 'favoritos', 'usuario_id', 'receta_id');
     }
 }

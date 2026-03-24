@@ -11,7 +11,22 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="fw-bold mb-0" style="color: #333;">{{ $receta->titulo }}</h2>
-                        <span class="badge px-3 py-2 rounded-pill" style="background-color: #729c48; color: white;">{{ $receta->categoria->nombre ?? 'Sin categoría' }}</span>
+                        <div class="d-flex gap-2">
+                            @auth
+                                @php
+                                    $esFavorito = Auth::user()->recetasFavoritas->contains($receta->id);
+                                @endphp
+                                <form action="{{ route('receta.favorito', $receta->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm {{ $esFavorito ? 'btn-danger' : 'btn-outline-danger' }} rounded-pill px-3 shadow-sm">
+                                        <i class="bi {{ $esFavorito ? 'bi-heart-fill' : 'bi-heart' }}"></i> 
+                                        {{ $esFavorito ? 'Guardada' : 'Guardar' }}
+                                    </button>
+                                </form>
+                            @endauth
+
+                            <span class="badge px-3 py-2 rounded-pill d-flex align-items-center" style="background-color: #729c48; color: white;">{{ $receta->categoria->nombre ?? 'Sin categoría' }}</span>
+                        </div>
                     </div>
                     <div class="d-flex align-items-center gap-2 mt-2 mb-3">
                         <div class="text-warning fs-5">
@@ -21,6 +36,7 @@
                         </div>
                         <span class="text-muted fw-bold">({{ number_format($media ?? 0, 1) }})</span>
 
+                        @auth
                         <form action="{{ route('receta.valorar', $receta->id) }}" method="POST" class="ms-3 d-flex align-items-center">
                             @csrf
                             <select name="puntuacion" class="form-select form-select-sm border-0 bg-light me-2" style="width: auto; cursor: pointer;" required>
@@ -33,6 +49,7 @@
                             </select>
                             <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3">Votar</button>
                         </form>
+                        @endauth
                     </div>
                     <p class="text-muted"><i class="bi bi-person-circle"></i> Por <strong>{{ $receta->autor->name ?? 'Anónimo' }}</strong></p>
                     <div class="d-flex gap-4 mb-4 bg-light p-3 rounded" style="border-radius: 12px !important;">
@@ -80,10 +97,11 @@
 
             <div class="card border-0 shadow-sm mb-5" style="border-radius: 16px; background-color: #f8f9fa;">
                 <div class="card-body p-3">
+                    @auth
                     <form action="{{ route('comentario.store', $receta->id) }}" method="POST">
                         @csrf
                         <div class="d-flex gap-3">
-                            <img src="{{ asset('assets/img/usuario1.png') }}"
+                            <img src="{{ asset(auth()->user()->avatar ?? 'assets/img/logo.png') }}"
                                 class="rounded-circle shadow-sm"
                                 width="50"
                                 height="50"
@@ -106,6 +124,18 @@
                             </div>
                         </div>
                     </form>
+                    @endauth
+
+                    @guest
+                    <div class="text-center py-4">
+                        <h6 class="fw-bold text-secondary mb-3">¿Quieres dar tu opinión sobre esta receta?</h6>
+                        <a href="{{ route('login') }}" class="btn text-white px-4 rounded-pill shadow-sm" style="background-color: #729c48;">
+                            <i class="bi bi-box-arrow-in-right"></i> Inicia sesión para comentar
+                        </a>
+                        <p class="mt-2 mb-0 small text-muted">¿No tienes cuenta? <a href="{{ route('register') }}" class="text-success text-decoration-none fw-bold">Regístrate gratis</a></p>
+                    </div>
+                    @endguest
+
                 </div>
             </div>
 
@@ -115,7 +145,6 @@
                     <div class="card-body p-4">
                         <div class="d-flex gap-3">
                             <div class="avatar-container shadow-sm">
-                                {{-- Cambio a Eloquent: Sacamos el avatar de la relación del autor --}}
                                 <img src="{{ asset($comentario->autor->avatar ?? 'assets/img/logo.png') }}"
                                     class="avatar-img"
                                     alt="Avatar">
