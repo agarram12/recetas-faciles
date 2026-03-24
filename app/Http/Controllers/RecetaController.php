@@ -39,7 +39,8 @@ class RecetaController extends Controller
     // Formulario para crear una receta
     public function create()
     {
-        return view('crear');
+        $categorias = \App\Models\Categoria::all();
+        return view('crear', ['categorias' => $categorias]);
     }
 
     // Guardar la nueva receta
