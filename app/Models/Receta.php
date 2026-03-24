@@ -9,6 +9,7 @@ class Receta extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = 'recetas';
 
     protected $fillable = [
@@ -34,5 +35,11 @@ class Receta extends Model
     public function valoraciones()
     {
         return $this->hasMany(Valoracion::class, 'receta_id');
+    }
+
+    public function ingredientes()
+    {
+        return $this->belongsToMany(Ingrediente::class, 'receta_ingredientes', 'receta_id', 'ingrediente_id')
+                    ->withPivot('cantidad');
     }
 }
