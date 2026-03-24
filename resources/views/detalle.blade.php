@@ -11,7 +11,7 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="fw-bold mb-0" style="color: #333;">{{ $receta->titulo }}</h2>
-                        <span class="badge px-3 py-2 rounded-pill" style="background-color: #729c48; color: white;">{{ $receta->categoria }}</span>
+                        <span class="badge px-3 py-2 rounded-pill" style="background-color: #729c48; color: white;">{{ $receta->categoria->nombre ?? 'Sin categoría' }}</span>
                     </div>
                     <div class="d-flex align-items-center gap-2 mt-2 mb-3">
                         <div class="text-warning fs-5">
@@ -34,14 +34,11 @@
                             <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3">Votar</button>
                         </form>
                     </div>
-
-                    <p class="text-muted"><i class="bi bi-person-circle"></i> Por <strong>{{ $receta->autor }}</strong></p>
-
+                    <p class="text-muted"><i class="bi bi-person-circle"></i> Por <strong>{{ $receta->autor->name ?? 'Anónimo' }}</strong></p>
                     <div class="d-flex gap-4 mb-4 bg-light p-3 rounded" style="border-radius: 12px !important;">
-                        <div class="fw-bold text-secondary"><i class="bi bi-clock text-success"></i> {{ $receta->tiempo_preparacion }}' min</div>
+                        <div class="fw-bold text-secondary"><i class="bi bi-clock text-success"></i> {{ $receta->tiempo_coccion }} min</div>
                         <div class="fw-bold text-secondary"><i class="bi bi-bar-chart text-success"></i> {{ $receta->dificultad }}</div>
                     </div>
-
                     @if($receta->descripcion)
                     <div class="mb-4">
                         <p class="fs-5 italic text-secondary" style="font-style: italic;">"{{ $receta->descripcion }}"</p>
@@ -49,9 +46,7 @@
                     @endif
 
                     <h5 class="fw-bold mb-3"><i class="bi bi-list-ol text-success"></i> Pasos de preparación</h5>
-
                     @php
-                    // Separamos los pasos por el punto
                     $lista_pasos = array_filter(explode('.', $receta->pasos));
                     @endphp
 
@@ -120,13 +115,14 @@
                     <div class="card-body p-4">
                         <div class="d-flex gap-3">
                             <div class="avatar-container shadow-sm">
-                                <img src="{{ asset($comentario->avatar) }}"
+                                {{-- Cambio a Eloquent: Sacamos el avatar de la relación del autor --}}
+                                <img src="{{ asset($comentario->autor->avatar ?? 'assets/img/logo.png') }}"
                                     class="avatar-img"
                                     alt="Avatar">
                             </div>
                             <div>
                                 <div class="d-flex align-items-center gap-2 mb-1">
-                                    <h6 class="fw-bold mb-0 text-dark">{{ $comentario->nombre_usuario }}</h6>
+                                    <h6 class="fw-bold mb-0 text-dark">{{ $comentario->autor->name ?? 'Usuario' }}</h6>
                                     <small class="text-muted" style="font-size: 0.8rem;">
                                         <i class="bi bi-clock"></i> {{ date('d/m/Y H:i', strtotime($comentario->created_at)) }}
                                     </small>
