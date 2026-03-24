@@ -44,6 +44,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function recetas()
+    {
+        return $this->hasMany(Receta::class, 'usuario_id');
+    }
+
     public function recetasFavoritas()
     {
         return $this->belongsToMany(\App\Models\Receta::class, 'favoritos', 'usuario_id', 'receta_id');

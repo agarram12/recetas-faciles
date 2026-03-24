@@ -337,3 +337,42 @@ a:hover {
     object-fit: cover;
     display: block;
 }
+
+/* Dashboard */
+
+.nav-pills .nav-link {
+    background-color: #fff !important;
+    color: var(--brand-secondary) !important;
+    border: 1px solid #dee2e6 !important;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link.active {
+    background-color: var(--brand-primary) !important;
+    color: #fff !important;
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 4px 10px rgba(118, 149, 59, 0.2);
+}
+
+.btn-dashboard-ver {
+    border: 2px solid var(--brand-primary);
+    color: var(--brand-primary);
+    font-weight: 600;
+}
+
+.btn-dashboard-ver:hover {
+    background-color: var(--brand-primary);
+    color: #fff;
+}
+
+.btn-dashboard-edit {
+    border: 2px solid var(--brand-primary);
+    background-color: var(--brand-primary);
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-dashboard-edit:hover {
+    background-color: var(--brand-dark-green);
+    border-color: var(--brand-dark-green);
+}

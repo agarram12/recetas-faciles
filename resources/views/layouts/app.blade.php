@@ -50,7 +50,7 @@
                                     <span class="fw-bold d-block" style="color: #729c48;">{{ Auth::user()->name }}</span>
                                     <span class="text-muted small">{{ Auth::user()->email }}</span>
                                 </li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Ver perfil</a></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="bi bi-person me-2"></i> Ver perfil</a></li>
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="bi bi-gear me-2"></i> Ajustes</a></li>
                                 <li>
                                     <hr class="dropdown-divider">

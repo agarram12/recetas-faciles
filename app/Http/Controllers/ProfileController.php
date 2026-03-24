@@ -11,6 +11,20 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    public function dashboard(Request $request): View
+    {
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        $misRecetas = $user->recetas()->with('categoria')->latest()->get();
+        $misFavoritos = $user->recetasFavoritas()->with(['autor', 'categoria'])->latest()->get();
+
+        return view('dashboard', [
+            'misRecetas' => $misRecetas,
+            'misFavoritos' => $misFavoritos,
+        ]);
+    }
+
+
     /**
      * Display the user's profile form.
      */
