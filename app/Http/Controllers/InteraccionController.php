@@ -3,46 +3,53 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Comentario;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Valoracion;
 
 class InteraccionController extends Controller
 {
     public function comentar(Request $request, $id)
     {
+        // validaciones del comentario
         $request->validate([
-            'contenido' => 'required|min:3'
+            'contenido' => 'required|string|max:500'
         ], [
-            'contenido.required' => 'El comentario no puede estar vacío.',
-            'contenido.min' => 'El comentario debe tener al menos 3 letras.'
+            'contenido.required' => 'No puedes enviar un comentario vacío.',
+            'contenido.max' => 'Tu comentario no puede superar los 500 caracteres.'
         ]);
 
-        DB::table('comentarios')->insert([
-            'usuario_id' => 1,
+        Comentario::create([
             'receta_id' => $id,
-            'contenido' => $request->contenido,
-            'created_at' => now()
+            'usuario_id' => Auth::id(),
+            'contenido' => $request->contenido
         ]);
-
-        // Volvemos a la receta
-        return redirect()->route('receta.show', $id);
+        return back()->with('success', '¡Gracias por compartir tu opinión!');
     }
-
+    
+    // puntuaciones por estrellas
     public function valorar(Request $request, $id)
     {
-        $request->validate(['puntuacion' => 'required|integer|between:1,5']);
-
-        DB::table('valoraciones')->updateOrInsert(
-            ['usuario_id' => 1, 'receta_id' => $id],
+        // recibe 1 estrella o 5 como max
+        $request->validate([
+            'puntuacion' => 'required|integer|min:1|max:5'
+        ]);
+        
+        Valoracion::updateOrCreate(
+            ['usuario_id' => Auth::id(), 'receta_id' => $id],
             ['puntuacion' => $request->puntuacion]
         );
 
-        return redirect()->back();
+        return back()->with('success', '¡Gracias por tu valoración!');
     }
 
-    public function toggleFavorito(Request $request, $id)
+    // Añadir y quitar favoritos
+    public function toggleFavorito($id)
     {
-        $receta = \App\Models\Receta::findOrFail($id);
-        $request->user()->favoritos()->toggle($receta->id);
-        return back();
+        /** @var \App\Models\User $usuario */
+        $usuario = Auth::user();
+        $usuario->recetasFavoritas()->toggle($id);
+
+        return back()->with('success', 'Tu lista de favoritos ha sido actualizada.');
     }
 }
