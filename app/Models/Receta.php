@@ -14,7 +14,7 @@ class Receta extends Model
 
     protected $fillable = [
         'usuario_id', 'categoria_id', 'titulo', 'descripcion', 
-        'tiempo_preparacion', 'dificultad', 'url_imagen', 'pasos'
+        'tiempo_coccion', 'dificultad', 'url_imagen', 'pasos'
     ];
 
     public function autor()

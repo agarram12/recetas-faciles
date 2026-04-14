@@ -40,7 +40,7 @@
                             <label class="form-label">PASOS DE PREPARACIÓN</label>
                             <div id="pasos-container">
                                 @php
-                                // Separamos los pasos por puntos
+                                // Separar los pasos por puntos
                                 $pasos_array = array_filter(explode('. ', $receta->pasos));
                                 @endphp
 
@@ -59,18 +59,20 @@
 
                         <div class="row g-4 mb-5">
                             <div class="col-md-4">
-                                <label class="form-label">CATEGORÍA</label>
-                                <select class="form-select" name="categoria_id">
-                                    <option value="1" {{ $receta->categoria_id == 1 ? 'selected' : '' }}>Tradicional</option>
-                                    <option value="2" {{ $receta->categoria_id == 2 ? 'selected' : '' }}>Postres</option>
-                                    <option value="3" {{ $receta->categoria_id == 3 ? 'selected' : '' }}>Vegano</option>
-                                    <option value="4" {{ $receta->categoria_id == 4 ? 'selected' : '' }}>Carnes</option>
-                                    <option value="5" {{ $receta->categoria_id == 5 ? 'selected' : '' }}>Sopas y Cremas</option>
+                                <label class="form-label text-secondary fw-bold">CATEGORÍA</label>
+                                <select class="form-select border-0 bg-light" name="categoria_id" required>
+                                    <option value="" disabled>Selecciona una categoría...</option>
+                                    @foreach($categorias as $cat)
+                                    <option value="{{ $cat->id }}"
+                                        {{ $cat->id == $receta->categoria_id ? 'selected' : '' }}>
+                                        {{ $cat->nombre }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">TIEMPO (MIN)</label>
-                                <input type="number" class="form-control" name="tiempo_coccion" value="{{ $receta->tiempo_preparacion }}" required>
+                                <input type="number" class="form-control" name="tiempo_coccion" value="{{ $receta->tiempo_coccion }}" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">DIFICULTAD</label>

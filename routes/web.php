@@ -15,7 +15,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/usuario/{user}/seguir', [ProfileController::class, 'toggleFollow'])->name('usuario.follow');
+    Route::get('/notificaciones', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notificaciones/marcar-leidas', [App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
 });
+
+Route::get('/usuario/{user}', [ProfileController::class, 'show'])->name('usuario.show');
+Route::get('/usuario/{user}/seguidores', [ProfileController::class, 'seguidores'])->name('usuario.seguidores');
+Route::get('/usuario/{user}/seguidos', [ProfileController::class, 'seguidos'])->name('usuario.seguidos');
 
 require __DIR__.'/auth.php';
 
@@ -26,7 +34,7 @@ Route::get('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'show'
 Route::get('/receta/{id}/editar', [App\Http\Controllers\RecetaController::class, 'edit'])->name('receta.edit')->middleware('auth');
 Route::put('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'update'])->name('receta.update')->middleware('auth');
 Route::delete('/receta/{id}', [App\Http\Controllers\RecetaController::class, 'destroy'])->name('receta.destroy')->middleware('auth');
-
+// 
 Route::post('/receta/{id}/valorar', [App\Http\Controllers\InteraccionController::class, 'valorar'])->name('receta.valorar')->middleware('auth');
 Route::post('/receta/{id}/comentario', [App\Http\Controllers\InteraccionController::class, 'comentar'])->name('comentario.store')->middleware('auth');
 Route::post('/receta/{receta}/favorito', [App\Http\Controllers\InteraccionController::class, 'toggleFavorito'])->name('receta.favorito')->middleware('auth');

@@ -42,7 +42,7 @@
                 <div class="card-body">
                     <div class="d-flex mb-3">
                         <img src="{{ asset(Auth::check() ? Auth::user()->avatar : 'assets/img/logo.png') }}" class="rounded-circle me-2" width="40" height="40" style="object-fit: cover;">
-                        <input type="text" class="form-control rounded-pill bg-light border-0 cursor-pointer" placeholder="¿Qué has cocinado hoy?" onclick="window.location.href='{{ route('receta.create') }}'">
+                        <input type="text" class="form-control rounded-pill bg-light border-0 cursor-pointer" placeholder="¿Qué has cocinado hoy?" onclick="window.location.href='{{ route("receta.create") }}'">
                     </div>
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('receta.create') }}" class="btn btn-sm px-4 rounded-pill text-white text-decoration-none" style="background-color: #729c48;">Publicar</a>
@@ -55,13 +55,19 @@
                     <i class="bi bi-search me-2"></i> Mostrando resultados para: <strong>"{{ request('buscar') }}"</strong>
                     <a href="/" class="float-end text-decoration-none" style="color: #729c48;">Limpiar filtro <i class="bi bi-x-circle"></i></a>
                 </div>
-                
-                @if(count($recetas) == 0)
-                    <div class="text-center py-5">
-                        <i class="bi bi-emoji-frown display-4 text-muted mb-3"></i>
-                        <h4 class="text-muted">No hemos encontrado ninguna receta</h4>
-                    </div>
-                @endif
+            @else
+                <div class="mb-3">
+                    <h5 class="fw-bold">Feed social</h5>
+                    <p class="text-muted small">Recetas de las personas que sigues y tus publicaciones recientes.</p>
+                </div>
+            @endif
+
+            @if($recetas->count() == 0)
+                <div class="text-center py-5">
+                    <i class="bi bi-emoji-frown display-4 text-muted mb-3"></i>
+                    <h4 class="text-muted">No hay recetas para mostrar</h4>
+                    <p class="text-muted">Prueba con otra búsqueda o sigue a nuevos usuarios.</p>
+                </div>
             @endif
 
             <div id="feedContainer" class="row g-3">
@@ -72,13 +78,17 @@
                         
                         <div class="card-header bg-white border-0 py-2 d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset($receta->autor->avatar) }}" class="rounded-circle me-2" width="30" height="30" style="object-fit: cover;">
+                                <img src="{{ asset($receta->autor_avatar ?? 'assets/img/logo.png') }}" class="rounded-circle me-2" width="30" height="30" style="object-fit: cover;">
                                 <div>
-                                    <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">{{ $receta->autor->name }}</h6>
+                                    <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">
+                                        <a href="{{ route('usuario.show', $receta->autor_id) }}" class="text-decoration-none text-dark">
+                                            {{ $receta->autor_nombre }}
+                                        </a>
+                                    </h6>
                                 </div>
                             </div>
 
-                            <span class="badge bg-light text-dark border">{{ $receta->categoria->nombre }}</span>
+                            <span class="badge bg-light text-dark border">{{ $receta->categoria_nombre }}</span>
 
                             @if(Auth::check() && Auth::id() == $receta->usuario_id)
                             <div class="d-flex gap-2">
@@ -103,7 +113,7 @@
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="fw-bold mb-0 text-truncate" style="max-width: 70%;">{{ $receta->titulo }}</h6>
-                                <span class="badge bg-light text-dark border"><i class="bi bi-clock"></i> {{ $receta->tiempo_preparacion }}'</span>
+                                <span class="badge bg-light text-dark border"><i class="bi bi-clock"></i> {{ $receta->tiempo_coccion }}'</span>
                             </div>
 
                             <div class="d-flex gap-2 mt-auto">
@@ -132,7 +142,10 @@
                     </article>
                 </div>
                 @endforeach
+            </div>
 
+            <div class="mt-4 d-flex justify-content-center">
+                {{ $recetas->withQueryString()->links('pagination::bootstrap-5') }}
             </div>
         </div>
 

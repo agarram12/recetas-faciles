@@ -5,25 +5,48 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Receta;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RecetaController extends Controller
 {
-    // Mostrar el feed
+    // Mostrar el feed y búsqueda
     public function index(Request $request)
     {
         $buscar = $request->input('buscar');
-        $query = Receta::with(['autor', 'categoria']);
+
+        $query = DB::table('recetas')
+            ->join('users', 'recetas.usuario_id', '=', 'users.id')
+            ->join('categorias', 'recetas.categoria_id', '=', 'categorias.id')
+            ->select(
+                'recetas.*',
+                'users.id as autor_id',
+                'users.name as autor_nombre',
+                'users.avatar as autor_avatar',
+                'categorias.nombre as categoria_nombre'
+            );
 
         if ($buscar) {
-            $query->where('titulo', 'LIKE', '%' . $buscar . '%')
-                  ->orWhere('descripcion', 'LIKE', '%' . $buscar . '%')
-                  ->orWhereHas('categoria', function($q) use ($buscar) {
-                      $q->where('nombre', 'LIKE', '%' . $buscar . '%');
-                  });
+            $query->where(function ($sub) use ($buscar) {
+                $sub->where('recetas.titulo', 'LIKE', '%' . $buscar . '%')
+                    ->orWhere('recetas.descripcion', 'LIKE', '%' . $buscar . '%')
+                    ->orWhere('users.name', 'LIKE', '%' . $buscar . '%')
+                    ->orWhere('categorias.nombre', 'LIKE', '%' . $buscar . '%');
+            });
+        } elseif (Auth::check()) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $seguidos = $user->seguidos()->pluck('seguido_id')->toArray();
+
+            if (! empty($seguidos)) {
+                $query->where(function ($sub) use ($seguidos) {
+                    $sub->whereIn('recetas.usuario_id', $seguidos)
+                        ->orWhere('recetas.usuario_id', Auth::id());
+                });
+            }
         }
 
-        $recetas = $query->orderBy('created_at', 'desc')->get();
-        
+        $recetas = $query->orderByDesc('recetas.id')->paginate(8);
+
         $populares = Receta::withAvg('valoraciones', 'puntuacion')
             ->orderBy('valoraciones_avg_puntuacion', 'desc')
             ->limit(3)
@@ -84,7 +107,7 @@ class RecetaController extends Controller
             'descripcion' => $request->descripcion,
             'pasos' => $pasos_texto_unificado,
             'url_imagen' => $ruta_imagen_bd,
-            'tiempo_preparacion' => $request->tiempo_coccion,
+            'tiempo_coccion' => $request->tiempo_coccion,
             'dificultad' => $request->dificultad
         ]);
 
@@ -133,7 +156,13 @@ class RecetaController extends Controller
         if ($receta->usuario_id !== Auth::id() && Auth::id() !== 1) {
             abort(403, 'No tienes permiso para editar esta receta.');
         }
-        return view('editar', ['receta' => $receta]);
+
+        $categorias = \App\Models\Categoria::all();
+
+        return view('editar', [
+            'receta' => $receta, 
+            'categorias' => $categorias
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -173,7 +202,7 @@ class RecetaController extends Controller
             'descripcion' => $request->descripcion,
             'pasos' => $pasos_texto_unificado,
             'url_imagen' => $ruta_imagen_bd,
-            'tiempo_preparacion' => $request->tiempo_coccion,
+            'tiempo_coccion' => $request->tiempo_coccion,
             'dificultad' => $request->dificultad
         ]);
 

@@ -1,15 +1,3 @@
-CREATE TABLE users (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    email_verified_at TIMESTAMP NULL DEFAULT NULL,
-    password VARCHAR(255) NOT NULL,
-    avatar VARCHAR(255) DEFAULT 'assets/img/logo.png',
-    remember_token VARCHAR(100) NULL DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
 CREATE TABLE categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
@@ -18,7 +6,7 @@ CREATE TABLE categorias (
 
 CREATE TABLE recetas (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
+    usuario_id BIGINT UNSIGNED NOT NULL,
     categoria_id INT NOT NULL,
     titulo VARCHAR(150) NOT NULL,
     descripcion TEXT DEFAULT NULL,
@@ -46,7 +34,7 @@ CREATE TABLE receta_ingredientes (
 
 CREATE TABLE comentarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
+    usuario_id BIGINT UNSIGNED NOT NULL,
     receta_id INT NOT NULL,
     contenido TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +44,7 @@ CREATE TABLE comentarios (
 
 CREATE TABLE valoraciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
+    usuario_id BIGINT UNSIGNED NOT NULL,
     receta_id INT NOT NULL,
     puntuacion INT CHECK (puntuacion BETWEEN 1 AND 5),
     FOREIGN KEY (usuario_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -64,7 +52,7 @@ CREATE TABLE valoraciones (
 );
 
 CREATE TABLE favoritos (
-    usuario_id INT NOT NULL,
+    usuario_id BIGINT UNSIGNED NOT NULL,
     receta_id INT NOT NULL,
     fecha_guardado DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (usuario_id, receta_id),
@@ -72,26 +60,24 @@ CREATE TABLE favoritos (
     FOREIGN KEY (receta_id) REFERENCES recetas(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (nombre_usuario, email, password, biografia) VALUES 
-('Antonio Cocinitas', 'antonio@email.com', '1234', 'Amante de lo tradicional.'),
-('María Chef', 'maria@email.com', '1234', 'Especialista en postres.'),
-('VeganLife', 'vegan@email.com', '1234', 'Recetas 100% plant-based.'),
-('Carlos Parrilla', 'carlos@email.com', '1234', 'Loco por la carne y las brasas.'),
-('Laura Saludable', 'laura@email.com', '1234', 'Nutrición y sabor van de la mano.');
+INSERT INTO users (name, email, password, descripcion) VALUES 
+('Antonio Cocinitas', 'antonio@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Amante de lo tradicional.'),
+('María Chef', 'maria@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Especialista en postres.'),
+('VeganLife', 'vegan@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Recetas 100% plant-based.'),
+('Carlos Parrilla', 'carlos@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Loco por la carne y las brasas.'),
+('Laura Saludable', 'laura@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Nutrición y sabor van de la mano.');
 
 INSERT INTO categorias (nombre, descripcion) VALUES 
-('Tradicional', 'Platos de toda la vida.'),
-('Postres', 'Para los más golosos.'),
-('Vegano', 'Sin ingredientes de origen animal.'),
-('Carnes', 'Las mejores recetas para carnívoros.'),
-('Sopas y Cremas', 'Perfectos para entrar en calor o refrescarse.');
+('Veganos', 'Recetas 100% plant-based y saludables.'),
+('Carnívoros', 'Las mejores recetas para amantes de la carne.'),
+('Dulceros', 'Postres y delicias para los más golosos.');
 
 INSERT INTO recetas (usuario_id, categoria_id, titulo, pasos, url_imagen, tiempo_coccion, dificultad) VALUES 
 (1, 1, 'Tortilla de Patatas', 'Freír patatas y mezclar con huevo.', 'assets/img/tortilla.jpg', 40, 'Media'),
-(2, 2, 'Tarta de Queso', 'Triturar galletas y mezclar con queso.', 'assets/img/cheesecake.jpg', 50, 'Fácil'),
-(3, 3, 'Ensalada Fresca', 'Lavar lechuga, cortar tomate y aliñar.', 'assets/img/salad.jpg', 10, 'Fácil'),
-(4, 4, 'Costillas BBQ', 'Adobar y hornear a baja temperatura.', 'assets/img/bbq.jpg', 120, 'Media'),
-(5, 5, 'Gazpacho Andaluz', 'Triturar tomate, pimiento, pepino y ajo.', 'assets/img/gazpacho.jpg', 15, 'Fácil');
+(2, 3, 'Tarta de Queso', 'Triturar galletas y mezclar con queso.', 'assets/img/cheesecake.jpg', 50, 'Fácil'),
+(3, 1, 'Ensalada Fresca', 'Lavar lechuga, cortar tomate y aliñar.', 'assets/img/salad.jpg', 10, 'Fácil'),
+(4, 2, 'Costillas BBQ', 'Adobar y hornear a baja temperatura.', 'assets/img/bbq.jpg', 120, 'Media'),
+(5, 1, 'Gazpacho Andaluz', 'Triturar tomate, pimiento, pepino y ajo.', 'assets/img/gazpacho.jpg', 15, 'Fácil');
 
 INSERT INTO ingredientes (nombre) VALUES 
 ('Patata'), ('Huevo'), ('Queso Crema'), ('Tomate'), ('Costilla de Cerdo');

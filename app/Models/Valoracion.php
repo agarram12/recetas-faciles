@@ -9,6 +9,6 @@ class Valoracion extends Model
 {
     use HasFactory;
     protected $table = 'valoraciones';
-    const UPDATED_AT = null;
+    public $timestamps = false;
     protected $fillable = ['receta_id', 'usuario_id', 'puntuacion'];
 }

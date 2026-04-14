@@ -41,6 +41,37 @@
                 <div class="ms-auto d-flex align-items-center gap-3 mt-3 mt-lg-0">
                     <div class="ms-auto d-flex align-items-center gap-3 mt-3 mt-lg-0">
                         @auth
+                        <div class="dropdown me-2">
+                            <a href="#" class="position-relative btn btn-link text-dark text-decoration-none" id="dropdownNotificaciones" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bell fs-4"></i>
+                                @if(Auth::user()->unreadNotifications->count())
+                                    <span class="badge bg-danger rounded-circle position-absolute" style="top: 0; right: -5px; font-size: 0.65rem;">{{ Auth::user()->unreadNotifications->count() }}</span>
+                                @endif
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="dropdownNotificaciones" style="min-width: 320px;">
+                                <li class="px-3 py-3 bg-light border-bottom">
+                                    <span class="fw-bold text-dark">Notificaciones</span>
+                                </li>
+                                @forelse(Auth::user()->unreadNotifications->take(5) as $notification)
+                                    <li>
+                                        <a href="{{ route('notifications.index') }}" class="dropdown-item small text-wrap">
+                                            {{ $notification->data['mensaje'] ?? 'Nueva actividad' }}
+                                            <br><span class="text-muted small">{{ $notification->created_at->diffForHumans() }}</span>
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li class="px-3 py-3 text-center text-muted">No hay notificaciones nuevas.</li>
+                                @endforelse
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center" href="{{ route('notifications.index') }}">Ver todas</a></li>
+                                <li>
+                                    <form action="{{ route('notifications.markAllRead') }}" method="POST" class="p-3 m-0">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary w-100">Marcar todas como leídas</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                         <div class="dropdown">
                             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownPerfil" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="{{ asset(Auth::user()->avatar) }}" alt="Avatar" width="40" height="40" class="rounded-circle shadow-sm" style="object-fit: cover; border: 2px solid #729c48;">

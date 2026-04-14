@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'descripcion',
     ];
 
     /**
@@ -52,5 +53,32 @@ class User extends Authenticatable
     public function recetasFavoritas()
     {
         return $this->belongsToMany(\App\Models\Receta::class, 'favoritos', 'usuario_id', 'receta_id');
+    }
+
+    public function seguidores()
+    {
+        return $this->belongsToMany(self::class, 'seguidores', 'seguido_id', 'seguidor_id')->withTimestamps();
+    }
+
+    public function seguidos()
+    {
+        return $this->belongsToMany(self::class, 'seguidores', 'seguidor_id', 'seguido_id')->withTimestamps();
+    }
+
+    public function sigueA(User $usuario)
+    {
+        return $this->seguidos()->where('seguido_id', $usuario->id)->exists();
+    }
+
+    public function feedRecetas()
+    {
+        $seguidos = $this->seguidos()->pluck('seguido_id')->toArray();
+
+        return \App\Models\Receta::where(function ($query) use ($seguidos) {
+            if (! empty($seguidos)) {
+                $query->whereIn('usuario_id', $seguidos);
+            }
+            $query->orWhere('usuario_id', $this->id);
+        });
     }
 }
