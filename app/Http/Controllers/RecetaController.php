@@ -25,7 +25,11 @@ class RecetaController extends Controller
     // Mostrar el feed y búsqueda
     public function index(Request $request)
     {
-        $buscar = $request->input('buscar');
+        $buscar     = $request->input('buscar');
+        $categoria  = $request->input('categoria');
+        $dificultad = $request->input('dificultad');
+        $tiempo     = $request->input('tiempo');
+        $orden      = $request->input('orden', 'recientes');
 
         $query = DB::table('recetas')
             ->join('users', 'recetas.usuario_id', '=', 'users.id')
@@ -38,6 +42,7 @@ class RecetaController extends Controller
                 'categorias.nombre as categoria_nombre'
             );
 
+        // Filtro por búsqueda de texto
         if ($buscar) {
             $query->where(function ($sub) use ($buscar) {
                 $sub->where('recetas.titulo', 'LIKE', '%' . $buscar . '%')
@@ -45,7 +50,30 @@ class RecetaController extends Controller
                     ->orWhere('users.name', 'LIKE', '%' . $buscar . '%')
                     ->orWhere('categorias.nombre', 'LIKE', '%' . $buscar . '%');
             });
-        } elseif (Auth::check()) {
+        }
+
+        // Filtro por categoría específica
+        if ($categoria) {
+            $query->where('recetas.categoria_id', $categoria);
+        }
+
+        // Filtro por dificultad
+        if ($dificultad) {
+            $query->where('recetas.dificultad', $dificultad);
+        }
+
+        // Filtro por rango de tiempo de cocción
+        if ($tiempo) {
+            switch ($tiempo) {
+                case 'rapido':    $query->where('recetas.tiempo_coccion', '<=', 15); break;
+                case 'medio':    $query->whereBetween('recetas.tiempo_coccion', [16, 45]); break;
+                case 'largo':    $query->whereBetween('recetas.tiempo_coccion', [46, 90]); break;
+                case 'elaborado': $query->where('recetas.tiempo_coccion', '>', 90); break;
+            }
+        }
+
+        // Si no hay filtros ni búsqueda, aplicar feed de seguidos
+        if (!$buscar && !$categoria && !$dificultad && !$tiempo && Auth::check()) {
             /** @var \App\Models\User $user */
             $user = Auth::user();
             $seguidos = $user->seguidos()->pluck('seguido_id')->toArray();
@@ -58,7 +86,18 @@ class RecetaController extends Controller
             }
         }
 
-        $recetas = $query->orderByDesc('recetas.id')->paginate(8);
+        // Ordenación
+        switch ($orden) {
+            case 'antiguos':  $query->orderBy('recetas.id', 'asc'); break;
+            case 'rapidos':   $query->orderBy('recetas.tiempo_coccion', 'asc'); break;
+            case 'lentos':    $query->orderBy('recetas.tiempo_coccion', 'desc'); break;
+            default:          $query->orderByDesc('recetas.id'); break;
+        }
+
+        $recetas = $query->paginate(8);
+
+        // Datos para los filtros del sidebar
+        $categorias = \App\Models\Categoria::all();
 
         $populares = Receta::withAvg('valoraciones', 'puntuacion')
             ->orderBy('valoraciones_avg_puntuacion', 'desc')
@@ -66,9 +105,14 @@ class RecetaController extends Controller
             ->get();
 
         return view('index', [
-            'recetas' => $recetas,
-            'populares' => $populares,
-            'buscar' => $buscar
+            'recetas'    => $recetas,
+            'populares'  => $populares,
+            'categorias' => $categorias,
+            'buscar'     => $buscar,
+            'categoria'  => $categoria,
+            'dificultad' => $dificultad,
+            'tiempo'     => $tiempo,
+            'orden'      => $orden,
         ]);
     }
 

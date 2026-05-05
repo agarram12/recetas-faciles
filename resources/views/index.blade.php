@@ -24,12 +24,101 @@
                 </div>
                 @endauth
 
+                {{-- Filtros activos --}}
+                @if($categoria || $dificultad || $tiempo || $orden !== 'recientes')
                 <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-header bg-white fw-bold border-0 pt-3">Categorías</div>
+                    <div class="card-body py-2 px-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small fw-bold text-muted"><i class="bi bi-funnel"></i> Filtros activos</span>
+                            <a href="/" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-0" style="font-size: 0.75rem;">
+                                <i class="bi bi-x-lg"></i> Limpiar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- Categorías dinámicas --}}
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-header bg-white fw-bold border-0 pt-3">
+                        <i class="bi bi-bookmark" style="color: #729c48;"></i> Categorías
+                    </div>
                     <div class="list-group list-group-flush">
-                        <a href="/?buscar=Veganos" class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center"><span>🥗 Veganos</span></a>
-                        <a href="/?buscar=Carnívoros" class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center"><span>🥩 Carnívoros</span></a>
-                        <a href="/?buscar=Dulceros" class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center"><span>🍰 Dulceros</span></a>
+                        @foreach($categorias as $cat)
+                        @php
+                            $iconos = ['Veganos' => '🥗', 'Carnívoros' => '🥩', 'Dulceros' => '🍰'];
+                            $icono = $iconos[$cat->nombre] ?? '🍽️';
+                            $activa = $categoria == $cat->id;
+                        @endphp
+                        <a href="/?categoria={{ $cat->id }}{{ $dificultad ? '&dificultad='.$dificultad : '' }}{{ $tiempo ? '&tiempo='.$tiempo : '' }}{{ $orden !== 'recientes' ? '&orden='.$orden : '' }}" 
+                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activa ? 'active' : '' }}"
+                           style="{{ $activa ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
+                            <span>{{ $icono }} {{ $cat->nombre }}</span>
+                            @if($activa)
+                                <i class="bi bi-check-circle-fill"></i>
+                            @endif
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Dificultad --}}
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-header bg-white fw-bold border-0 pt-3">
+                        <i class="bi bi-speedometer2" style="color: #729c48;"></i> Dificultad
+                    </div>
+                    <div class="list-group list-group-flush">
+                        @foreach(['Fácil' => '🟢', 'Media' => '🟡', 'Difícil' => '🔴'] as $nivel => $color)
+                        @php $activaD = $dificultad === $nivel; @endphp
+                        <a href="/?dificultad={{ $nivel }}{{ $categoria ? '&categoria='.$categoria : '' }}{{ $tiempo ? '&tiempo='.$tiempo : '' }}{{ $orden !== 'recientes' ? '&orden='.$orden : '' }}" 
+                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activaD ? 'active' : '' }}"
+                           style="{{ $activaD ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
+                            <span>{{ $color }} {{ $nivel }}</span>
+                            @if($activaD)
+                                <i class="bi bi-check-circle-fill"></i>
+                            @endif
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Tiempo de cocción --}}
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-header bg-white fw-bold border-0 pt-3">
+                        <i class="bi bi-clock" style="color: #729c48;"></i> Tiempo
+                    </div>
+                    <div class="list-group list-group-flush">
+                        @foreach(['rapido' => '⚡ Rápido (≤15 min)', 'medio' => '🕐 Medio (16-45 min)', 'largo' => '🕑 Largo (46-90 min)', 'elaborado' => '👨‍🍳 Elaborado (+90 min)'] as $clave => $etiqueta)
+                        @php $activaT = $tiempo === $clave; @endphp
+                        <a href="/?tiempo={{ $clave }}{{ $categoria ? '&categoria='.$categoria : '' }}{{ $dificultad ? '&dificultad='.$dificultad : '' }}{{ $orden !== 'recientes' ? '&orden='.$orden : '' }}" 
+                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activaT ? 'active' : '' }}"
+                           style="{{ $activaT ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
+                            <span>{{ $etiqueta }}</span>
+                            @if($activaT)
+                                <i class="bi bi-check-circle-fill"></i>
+                            @endif
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Ordenar por --}}
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-header bg-white fw-bold border-0 pt-3">
+                        <i class="bi bi-sort-down" style="color: #729c48;"></i> Ordenar por
+                    </div>
+                    <div class="list-group list-group-flush">
+                        @foreach(['recientes' => '🆕 Más recientes', 'antiguos' => '📅 Más antiguos', 'rapidos' => '⏱️ Menos tiempo', 'lentos' => '🍲 Más tiempo'] as $clave => $etiqueta)
+                        @php $activaO = $orden === $clave; @endphp
+                        <a href="/?orden={{ $clave }}{{ $categoria ? '&categoria='.$categoria : '' }}{{ $dificultad ? '&dificultad='.$dificultad : '' }}{{ $tiempo ? '&tiempo='.$tiempo : '' }}" 
+                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activaO ? 'active' : '' }}"
+                           style="{{ $activaO ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
+                            <span>{{ $etiqueta }}</span>
+                            @if($activaO)
+                                <i class="bi bi-check-circle-fill"></i>
+                            @endif
+                        </a>
+                        @endforeach
                     </div>
                 </div>
 
@@ -54,6 +143,26 @@
                 <div class="alert alert-success border-0 shadow-sm mb-4" style="background-color: #eaf3e3; color: #4e6e2e;">
                     <i class="bi bi-search me-2"></i> Mostrando resultados para: <strong>"{{ request('buscar') }}"</strong>
                     <a href="/" class="float-end text-decoration-none" style="color: #729c48;">Limpiar filtro <i class="bi bi-x-circle"></i></a>
+                </div>
+            @endif
+
+            @if($categoria || $dificultad || $tiempo)
+                <div class="alert border-0 shadow-sm mb-4 d-flex align-items-center flex-wrap gap-2" style="background-color: #eaf3e3; color: #4e6e2e; border-radius: 12px;">
+                    <i class="bi bi-funnel me-1"></i> <span class="fw-bold">Filtrando:</span>
+                    @if($categoria)
+                        @php $catNombre = $categorias->firstWhere('id', $categoria)->nombre ?? ''; @endphp
+                        <span class="badge rounded-pill text-white px-3 py-1" style="background-color: #729c48;">{{ $catNombre }}</span>
+                    @endif
+                    @if($dificultad)
+                        <span class="badge rounded-pill text-white px-3 py-1" style="background-color: #729c48;">{{ $dificultad }}</span>
+                    @endif
+                    @if($tiempo)
+                        @php
+                            $tiempoLabels = ['rapido' => '≤15 min', 'medio' => '16-45 min', 'largo' => '46-90 min', 'elaborado' => '+90 min'];
+                        @endphp
+                        <span class="badge rounded-pill text-white px-3 py-1" style="background-color: #729c48;">{{ $tiempoLabels[$tiempo] ?? $tiempo }}</span>
+                    @endif
+                    <a href="/" class="ms-auto text-decoration-none fw-bold" style="color: #729c48;">Limpiar <i class="bi bi-x-circle"></i></a>
                 </div>
             @endif
 
