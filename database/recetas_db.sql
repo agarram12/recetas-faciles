@@ -11,6 +11,7 @@ CREATE TABLE recetas (
     titulo VARCHAR(150) NOT NULL,
     descripcion TEXT DEFAULT NULL,
     pasos TEXT,
+    imagenes_pasos JSON DEFAULT NULL,
     url_imagen VARCHAR(255) DEFAULT 'assets/img/logo.png',
     tiempo_coccion INT NOT NULL,
     dificultad ENUM('Fácil', 'Media', 'Difícil') DEFAULT 'Media',

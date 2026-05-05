@@ -62,17 +62,34 @@
                     </div>
                     @endif
 
+                    {{-- RF-94: Pasos de preparación con imágenes --}}
                     <h5 class="fw-bold mb-3"><i class="bi bi-list-ol text-success"></i> Pasos de preparación</h5>
                     @php
                     $lista_pasos = array_filter(explode('.', $receta->pasos));
+                    $imagenes_pasos = $receta->imagenes_pasos ?? [];
                     @endphp
 
                     <ul class="list-group list-group-flush mb-4">
                         @foreach($lista_pasos as $index => $paso)
                         @if(trim($paso) != '')
-                        <li class="list-group-item bg-light border-0 mb-2 p-3 rounded shadow-sm d-flex align-items-start" style="border-radius: 12px !important;">
-                            <span class="badge fs-6 me-3 rounded-circle d-flex align-items-center justify-content-center" style="background-color: #729c48; width: 30px; height: 30px;">{{ $index + 1 }}</span>
-                            <span class="fs-6 text-dark">{{ trim($paso) }}.</span>
+                        <li class="list-group-item bg-light border-0 mb-2 p-3 rounded shadow-sm" style="border-radius: 12px !important;">
+                            <div class="d-flex align-items-start">
+                                <span class="badge fs-6 me-3 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background-color: #729c48; width: 30px; height: 30px;">{{ $index + 1 }}</span>
+                                <div class="flex-grow-1">
+                                    <span class="fs-6 text-dark">{{ trim($paso) }}.</span>
+                                    {{-- Mostrar imagen del paso si existe --}}
+                                    @if(isset($imagenes_pasos[$index]) && $imagenes_pasos[$index])
+                                    <div class="mt-2">
+                                        <img src="{{ asset($imagenes_pasos[$index]) }}" 
+                                             alt="Imagen paso {{ $index + 1 }}" 
+                                             class="rounded shadow-sm" 
+                                             style="max-height: 200px; max-width: 100%; object-fit: cover; cursor: pointer;"
+                                             onclick="this.classList.toggle('img-ampliada')"
+                                        >
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
                         </li>
                         @endif
                         @endforeach
@@ -175,4 +192,11 @@
         </div>
     </div>
 </main>
+
+<style>
+    .img-ampliada {
+        max-height: 500px !important;
+        transition: max-height 0.3s ease;
+    }
+</style>
 @endsection

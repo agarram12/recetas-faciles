@@ -55,11 +55,6 @@
                     <i class="bi bi-search me-2"></i> Mostrando resultados para: <strong>"{{ request('buscar') }}"</strong>
                     <a href="/" class="float-end text-decoration-none" style="color: #729c48;">Limpiar filtro <i class="bi bi-x-circle"></i></a>
                 </div>
-            @else
-                <div class="mb-3">
-                    <h5 class="fw-bold">Feed social</h5>
-                    <p class="text-muted small">Recetas de las personas que sigues y tus publicaciones recientes.</p>
-                </div>
             @endif
 
             @if($recetas->count() == 0)

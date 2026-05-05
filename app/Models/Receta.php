@@ -14,7 +14,15 @@ class Receta extends Model
 
     protected $fillable = [
         'usuario_id', 'categoria_id', 'titulo', 'descripcion', 
-        'tiempo_coccion', 'dificultad', 'url_imagen', 'pasos'
+        'tiempo_coccion', 'dificultad', 'url_imagen', 'pasos',
+        'imagenes_pasos'
+    ];
+
+    /**
+     * Casts: imagenes_pasos se maneja como array PHP ↔ JSON en BD.
+     */
+    protected $casts = [
+        'imagenes_pasos' => 'array',
     ];
 
     public function autor()
