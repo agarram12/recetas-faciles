@@ -22,7 +22,11 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
-        "APP_URL": "https://tu-dominio.vercel.app"
+        "APP_DEBUG": "true",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie",
+        "CACHE_DRIVER": "array",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "NODE_VERSION": "20.x"
     }
 }
