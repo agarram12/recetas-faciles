@@ -12,7 +12,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h2 class="fw-bold mb-0" style="color: #333;">{{ $receta->titulo }}</h2>
                         <div class="d-flex gap-2">
-                            {{-- RF-102: Favorito AJAX sin recarga --}}
+                            {{-- Favorito AJAX sin recarga --}}
                             @auth
                                 @php
                                     $esFavorito = Auth::user()->recetasFavoritas->contains($receta->id);
@@ -38,7 +38,7 @@
                         </div>
                         <span class="text-muted fw-bold" id="mediaTexto">({{ number_format($media ?? 0, 1) }})</span>
 
-                        {{-- RF-102: Valoración AJAX --}}
+                        {{-- Valoración AJAX --}}
                         @auth
                         <form id="formValorar" data-ajax="true" class="ms-3 d-flex align-items-center" data-url="{{ route('receta.valorar', $receta->id) }}">
                             @csrf
@@ -68,7 +68,7 @@
                     </div>
                     @endif
 
-                    {{-- RF-94: Pasos de preparación con imágenes --}}
+                    {{-- Pasos de preparación con imágenes --}}
                     <h5 class="fw-bold mb-3"><i class="bi bi-list-ol text-success"></i> Pasos de preparación</h5>
                     @php
                     $lista_pasos = array_filter(explode('.', $receta->pasos));
@@ -120,7 +120,7 @@
 
             <div class="card border-0 shadow-sm mb-5" style="border-radius: 16px; background-color: #f8f9fa;">
                 <div class="card-body p-3">
-                    {{-- RF-102: Comentario AJAX --}}
+                    {{-- Comentario AJAX --}}
                     @auth
                     <form id="formComentar" data-ajax="true" data-url="{{ route('comentario.store', $receta->id) }}">
                         @csrf
@@ -207,7 +207,7 @@
         max-height: 500px !important;
         transition: max-height 0.3s ease;
     }
-    /* RF-99: Animación de entrada para comentarios nuevos */
+    /* Animación de entrada para comentarios nuevos */
     .comentario-nuevo {
         animation: slideInComment 0.4s ease forwards;
     }
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     // ============================================
-    // RF-102: COMENTARIOS AJAX (sin recarga)
+    // COMENTARIOS AJAX (sin recarga)
     // ============================================
     const formComentar = document.getElementById('formComentar');
     if (formComentar) {
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const spinnerComentar = document.getElementById('spinnerComentar');
             const btnTextComentar = formComentar.querySelector('.btn-text-comentar');
 
-            // RF-100: Mostrar loading en botón
+            // Mostrar loading en botón
             btnComentar.disabled = true;
             btnTextComentar.classList.add('d-none');
             spinnerComentar.classList.remove('d-none');
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================
-    // RF-102: VALORACIÓN AJAX (sin recarga)
+    // VALORACIÓN AJAX (sin recarga)
     // ============================================
     const formValorar = document.getElementById('formValorar');
     if (formValorar) {
@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const spinnerValorar = document.getElementById('spinnerValorar');
             const btnTextValorar = formValorar.querySelector('.btn-text-valorar');
 
-            // RF-100: Loading
+            // Loading
             btnValorar.disabled = true;
             btnTextValorar.classList.add('d-none');
             spinnerValorar.classList.remove('d-none');
@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================
-    // RF-102: FAVORITO AJAX en detalle (sin recarga)
+    // FAVORITO AJAX en detalle (sin recarga)
     // ============================================
     const btnFavDetalle = document.getElementById('btnFavoritoDetalle');
     if (btnFavDetalle) {

@@ -29,7 +29,7 @@
 
             <div class="collapse navbar-collapse" id="navbarContenido">
 
-                {{-- RF-101: Búsqueda visible tanto en desktop como móvil --}}
+                {{-- Búsqueda visible tanto en desktop como móvil --}}
                 <form class="d-flex mx-auto my-2 my-lg-0" style="width: 100%; max-width: 400px;" action="/" method="GET" id="formBusquedaNav">
                     <div class="input-group">
                         <input type="text" name="buscar" id="searchInputNav" class="form-control border-end-0 bg-light" placeholder="Buscar recetas, ingredientes..." style="border-radius: 20px 0 0 20px; border-color: #ced4da;" value="{{ request('buscar') }}" autocomplete="off">
@@ -109,7 +109,7 @@
         </div>
     </nav>
 
-    {{-- RF-100: Overlay de carga global --}}
+    {{-- Overlay de carga global --}}
     <div id="globalLoadingOverlay" class="loading-overlay d-none">
         <div class="loading-overlay-content">
             <div class="spinner-border text-white" role="status" style="width: 3rem; height: 3rem;">
@@ -119,7 +119,7 @@
         </div>
     </div>
 
-    {{-- RF-100: Toast global reutilizable --}}
+    {{-- Toast global reutilizable --}}
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
         <div id="toastNotificacion" class="toast align-items-center text-white border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="border-radius: 12px;">
             <div class="d-flex">
@@ -139,7 +139,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        /* RF-99: Transición de entrada de página */
+        /* Transición de entrada de página */
         .page-content {
             animation: pageIn 0.3s ease-out;
         }
@@ -148,9 +148,9 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* RF-99: Transición de salida — solo usada via JS inline styles, no CSS class */
+        /* Transición de salida — solo usada via JS inline styles, no CSS class */
 
-        /* RF-100: Spinner de búsqueda */
+        /* Spinner de búsqueda */
         .search-spinner {
             display: none;
         }
@@ -162,7 +162,7 @@
             display: none;
         }
 
-        /* RF-100: Overlay de carga global */
+        /* Overlay de carga global */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -188,7 +188,7 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        /* RF-100: Botón con estado de carga */
+        /* Botón con estado de carga */
         .btn-loading {
             position: relative;
             pointer-events: none;
@@ -207,7 +207,7 @@
 
     <script>
     // ============================================
-    // RF-100: SISTEMA DE TOASTS GLOBAL
+    // SISTEMA DE TOASTS GLOBAL
     // ============================================
     window.mostrarToast = function(mensaje, tipo) {
         const toastEl = document.getElementById('toastNotificacion');
@@ -239,7 +239,7 @@
     };
 
     // ============================================
-    // RF-100: OVERLAY DE CARGA GLOBAL en formularios
+    // OVERLAY DE CARGA GLOBAL en formularios
     // ============================================
     window.mostrarOverlay = function(texto) {
         const overlay = document.getElementById('globalLoadingOverlay');
@@ -255,7 +255,7 @@
     };
 
     document.addEventListener('DOMContentLoaded', function() {
-        // RF-100: Interceptar envío de formularios para mostrar overlay
+        // Interceptar envío de formularios para mostrar overlay
         document.querySelectorAll('form[method="POST"], form[method="post"]').forEach(function(form) {
             // No interceptar formularios AJAX marcados con data-ajax
             if (form.dataset.ajax) return;
@@ -275,7 +275,7 @@
         });
 
         // ============================================
-        // RF-99: TRANSICIÓN DE SALIDA al navegar
+        // TRANSICIÓN DE SALIDA al navegar
         // ============================================
         document.querySelectorAll('a[href]').forEach(function(link) {
             // Solo para enlaces internos que no abran en otra pestaña
@@ -334,7 +334,7 @@
         });
 
         // ============================================
-        // RF-98: Prevenir submit del form de búsqueda (solo en feed)
+        // Prevenir submit del form de búsqueda (solo en feed)
         // ============================================
         const formBusqueda = document.getElementById('formBusquedaNav');
         if (formBusqueda) {
@@ -357,7 +357,7 @@
         }
     });
 
-    // RF-100: Mostrar toast de flash messages del servidor
+    // Mostrar toast de flash messages del servidor
     @if(session('success'))
         document.addEventListener('DOMContentLoaded', function() {
             mostrarToast('{{ session('success') }}', 'success');

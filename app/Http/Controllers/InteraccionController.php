@@ -12,7 +12,7 @@ use App\Notifications\NuevaValoracion;
 
 class InteraccionController extends Controller
 {
-    // RF-102: Comentar con soporte AJAX
+
     public function comentar(Request $request, $id)
     {
         // validaciones del comentario
@@ -38,7 +38,7 @@ class InteraccionController extends Controller
             ));
         }
 
-        // RF-102: Si es AJAX, devolver JSON sin recargar
+
         if ($request->ajax()) {
             /** @var \App\Models\User $user */
             $user = Auth::user();
@@ -55,7 +55,7 @@ class InteraccionController extends Controller
         return back()->with('success', '¡Gracias por compartir tu opinión!');
     }
     
-    // RF-102: Valorar con soporte AJAX
+
     public function valorar(Request $request, $id)
     {
         // recibe 1 estrella o 5 como max
@@ -77,7 +77,7 @@ class InteraccionController extends Controller
             ));
         }
 
-        // RF-102: Si es AJAX, devolver JSON con la nueva media
+
         if ($request->ajax()) {
             $nuevaMedia = Valoracion::where('receta_id', $id)->avg('puntuacion') ?? 0;
             return response()->json([
@@ -91,7 +91,7 @@ class InteraccionController extends Controller
         return back()->with('success', '¡Gracias por tu valoración!');
     }
 
-    // Añadir y quitar favoritos (RF-102: AJAX sin recarga)
+    // Añadir y quitar favoritos
     public function toggleFavorito(Request $request, $id)
     {
         /** @var \App\Models\User $usuario */

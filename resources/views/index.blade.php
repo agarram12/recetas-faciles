@@ -33,7 +33,7 @@
         {{-- CONTENIDO CENTRAL: Feed --}}
         <div class="col-lg-6 col-12">
             
-            {{-- Botón filtros en móvil (RF-101) --}}
+            {{-- Botón filtros en móvil --}}
             <div class="d-lg-none mb-3">
                 <button class="btn btn-outline-gris w-100 rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFiltros">
                     <i class="bi bi-funnel"></i> Filtros y categorías
@@ -100,7 +100,7 @@
                 @endforeach
             </div>
 
-            {{-- RF-97: Infinite scroll loader --}}
+            {{-- Infinite scroll loader --}}
             @if($recetas->hasMorePages())
             <div id="infinite-loader" class="text-center py-4">
                 <div class="spinner-border text-success" role="status" style="width: 2rem; height: 2rem;">
@@ -142,7 +142,7 @@
     </div>
 </main>
 
-{{-- RF-101: Offcanvas de filtros para móvil --}}
+{{-- Offcanvas de filtros para móvil --}}
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasFiltros" aria-labelledby="offcanvasFiltrosLabel">
     <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title fw-bold" id="offcanvasFiltrosLabel" style="color: #729c48;">
@@ -161,7 +161,7 @@
         transform: translateX(5px);
     }
 
-    /* RF-99: Animación de entrada de cards */
+    /* Animación de entrada de cards */
     .receta-card-item {
         animation: fadeInUp 0.4s ease forwards;
     }
@@ -187,7 +187,7 @@
     .receta-card-item:nth-child(7) { animation-delay: 0.3s; }
     .receta-card-item:nth-child(8) { animation-delay: 0.35s; }
 
-    /* RF-100: Spinner de búsqueda (dentro del feed) */
+    /* Spinner de búsqueda (dentro del feed) */
     .search-spinner {
         display: none;
         width: 1rem;
@@ -197,7 +197,7 @@
         display: inline-block;
     }
 
-    /* RF-100: Skeleton loader para feed */
+    /* Skeleton loader para feed */
     .feed-loading-state {
         opacity: 0.5;
         pointer-events: none;
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let hasMore = {{ $recetas->hasMorePages() ? 'true' : 'false' }};
 
     // ============================================
-    // RF-97: INFINITE SCROLL con IntersectionObserver
+    // INFINITE SCROLL con IntersectionObserver
     // ============================================
     if (infiniteLoader) {
         const observer = new IntersectionObserver(function(entries) {
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if (data.html && data.html.trim()) {
-                // RF-99: Insertar con stagger animation
+                // Insertar con stagger animation
                 const temp = document.createElement('div');
                 temp.innerHTML = data.html;
                 const newCards = temp.querySelectorAll('.receta-card-item');
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================
-    // RF-98: BÚSQUEDA AJAX con debounce (sin recargas)
+    // BÚSQUEDA AJAX con debounce (sin recargas)
     // ============================================
     const searchInput = document.getElementById('searchInputNav');
     let searchTimeout = null;
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (query.length >= 2) {
                     buscarAJAX(query);
                 } else if (query.length === 0) {
-                    // RF-98: Restaurar feed SIN recarga de página
+                    // Restaurar feed SIN recarga de página
                     restaurarFeed();
                 }
                 if (spinner) spinner.classList.remove('active');
@@ -305,12 +305,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // RF-98: Búsqueda AJAX sin recargar
+    // Búsqueda AJAX sin recargar
     function buscarAJAX(query) {
-        // RF-100: Mostrar loading
+        // Mostrar loading
         feedContainer.classList.add('feed-loading-state');
         
-        // RF-98: Actualizar URL sin recargar
+        // Actualizar URL sin recargar
         const url = new URL(window.location);
         url.searchParams.set('buscar', query);
         history.pushState({feedSearch: true, buscar: query}, '', url);
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // RF-98: Restaurar feed original sin recargar
+    // Restaurar feed original sin recargar
     function restaurarFeed() {
         feedContainer.classList.add('feed-loading-state');
 
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // RF-98: Actualizar alerta de búsqueda dinámicamente
+    // Actualizar alerta de búsqueda dinámicamente
     function actualizarAlertaBusqueda(query, total) {
         if (!alertaBusqueda) return;
         if (query && query.length > 0) {
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // RF-98: Manejar botón atrás del navegador (solo para búsquedas AJAX que usamos pushState)
+    // Manejar botón atrás del navegador (solo para búsquedas AJAX que usamos pushState)
     window.addEventListener('popstate', function(e) {
         // Solo manejar estados que nosotros empujamos con pushState
         if (!e.state || !e.state.feedSearch) return;
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ============================================
-    // RF-102: FAVORITOS sin recarga (AJAX)
+    // FAVORITOS sin recarga (AJAX)
     // ============================================
     function bindFavoritos() {
         document.querySelectorAll('.btn-favorito').forEach(function(btn) {
@@ -470,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         icono.classList.add('bi-heart');
                     }
 
-                    // RF-100: Toast de confirmación
+                    // Toast de confirmación
                     mostrarToast(data.mensaje, 'success');
                 })
                 .catch(err => {

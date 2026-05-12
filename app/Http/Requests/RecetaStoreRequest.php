@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Form Request para la validación al crear una receta.
- * RF-92: Valida tipo y tamaño máximo de imagen.
  */
 class RecetaStoreRequest extends FormRequest
 {

@@ -208,7 +208,6 @@ class RecetaController extends Controller
 
     /**
      * Eliminar receta.
-     * RF-96: Al borrar una receta se eliminan sus imágenes asociadas.
      */
     public function destroy($id)
     {
@@ -245,8 +244,6 @@ class RecetaController extends Controller
 
     /**
      * Actualizar receta.
-     * RF-91/RF-93: Manejo de imagen principal con reemplazo.
-     * RF-95: Actualización de imágenes por paso.
      */
     public function update(RecetaUpdateRequest $request, $id)
     {

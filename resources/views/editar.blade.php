@@ -23,7 +23,7 @@
                         @csrf
                         @method('PUT')
 
-                        {{-- RF-91: Imagen principal con preview de la actual --}}
+                        {{-- Imagen principal con preview de la actual --}}
                         <div class="mb-4">
                             <label class="form-label fw-bold text-secondary">FOTO DEL PLATO</label>
                             <div id="preview-principal-container" class="mb-2 text-center">
@@ -43,7 +43,7 @@
                             <textarea class="form-control" name="descripcion" rows="2" required>{{ $receta->descripcion }}</textarea>
                         </div>
 
-                        {{-- RF-95: Pasos con imágenes existentes y opción de cambiarlas --}}
+                        {{-- Pasos con imágenes existentes y opción de cambiarlas --}}
                         <div class="mb-4">
                             <label class="form-label fw-bold text-secondary">PASOS DE PREPARACIÓN</label>
                             <div id="pasos-container">
@@ -134,7 +134,7 @@
         const addPasoBtn = document.getElementById('add-paso');
         let contadorPasos = document.querySelectorAll('.paso-item').length;
 
-        // RF-100: Loading state al enviar formulario
+        // Loading state al enviar formulario
         const formEditar = document.querySelector('form[action="{{ route("receta.update", $receta->id) }}"]');
         if (formEditar) {
             formEditar.addEventListener('submit', function() {

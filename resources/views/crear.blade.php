@@ -26,7 +26,7 @@
                     <form action="{{ route('receta.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
-                        {{-- RF-91: Imagen principal con preview --}}
+                        {{-- Imagen principal con preview --}}
                         <div class="mb-4">
                             <label class="form-label fw-bold text-secondary">FOTO DEL PLATO</label>
                             <div id="preview-principal-container" class="mb-2 text-center d-none">
@@ -46,7 +46,7 @@
                             <textarea class="form-control" name="descripcion" rows="2" placeholder="Ej: Un plato tradicional perfecto para los domingos en familia..." required>{{ old('descripcion') }}</textarea>
                         </div>
 
-                        {{-- RF-95: Pasos con opción de imagen individual --}}
+                        {{-- Pasos con opción de imagen individual --}}
                         <div class="mb-4">
                             <label class="form-label fw-bold text-secondary">PASOS DE PREPARACIÓN</label>
                             
@@ -122,7 +122,7 @@
         const addPasoBtn = document.getElementById('add-paso');
         let contadorPasos = 1;
 
-        // RF-100: Loading state al enviar formulario
+        // Loading state al enviar formulario
         const formCrear = document.querySelector('form[action="{{ route("receta.store") }}"]');
         if (formCrear) {
             formCrear.addEventListener('submit', function() {
