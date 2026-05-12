@@ -115,7 +115,11 @@
 
                         <div class="d-flex justify-content-end gap-3 border-top pt-4">
                             <a href="/" class="btn btn-outline-gris">Cancelar</a>
-                            <button type="submit" class="btn btn-verde">Actualizar Receta</button>
+                            <button type="submit" class="btn btn-verde" id="btnActualizar">
+                                <span class="btn-text-actualizar"><i class="bi bi-check-lg me-1"></i> Actualizar Receta</span>
+                                <span class="spinner-border spinner-border-sm d-none" id="spinnerActualizar" role="status"></span>
+                                <span class="d-none" id="textoActualizando">Actualizando...</span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -129,6 +133,23 @@
         const pasosContainer = document.getElementById('pasos-container');
         const addPasoBtn = document.getElementById('add-paso');
         let contadorPasos = document.querySelectorAll('.paso-item').length;
+
+        // RF-100: Loading state al enviar formulario
+        const formEditar = document.querySelector('form[action="{{ route("receta.update", $receta->id) }}"]');
+        if (formEditar) {
+            formEditar.addEventListener('submit', function() {
+                const btn = document.getElementById('btnActualizar');
+                const spinner = document.getElementById('spinnerActualizar');
+                const textoActualizando = document.getElementById('textoActualizando');
+                const textoOriginal = document.querySelector('.btn-text-actualizar');
+                if (btn) {
+                    btn.disabled = true;
+                    textoOriginal.classList.add('d-none');
+                    spinner.classList.remove('d-none');
+                    textoActualizando.classList.remove('d-none');
+                }
+            });
+        }
 
         // Preview imagen principal
         const inputPrincipal = document.getElementById('input-imagen-principal');

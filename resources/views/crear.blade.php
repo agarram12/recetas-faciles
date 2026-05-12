@@ -103,7 +103,11 @@
 
                         <div class="d-flex justify-content-end gap-3 border-top pt-4">
                             <a href="/" class="btn btn-outline-gris">Cancelar</a>
-                            <button type="submit" class="btn btn-verde">Publicar Receta</button>
+                            <button type="submit" class="btn btn-verde" id="btnPublicar">
+                                <span class="btn-text-publicar"><i class="bi bi-upload me-1"></i> Publicar Receta</span>
+                                <span class="spinner-border spinner-border-sm d-none" id="spinnerPublicar" role="status"></span>
+                                <span class="d-none" id="textoPublicando">Publicando...</span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -117,6 +121,23 @@
         const pasosContainer = document.getElementById('pasos-container');
         const addPasoBtn = document.getElementById('add-paso');
         let contadorPasos = 1;
+
+        // RF-100: Loading state al enviar formulario
+        const formCrear = document.querySelector('form[action="{{ route("receta.store") }}"]');
+        if (formCrear) {
+            formCrear.addEventListener('submit', function() {
+                const btn = document.getElementById('btnPublicar');
+                const spinner = document.getElementById('spinnerPublicar');
+                const textoPublicando = document.getElementById('textoPublicando');
+                const textoOriginal = document.querySelector('.btn-text-publicar');
+                if (btn) {
+                    btn.disabled = true;
+                    textoOriginal.classList.add('d-none');
+                    spinner.classList.remove('d-none');
+                    textoPublicando.classList.remove('d-none');
+                }
+            });
+        }
 
         // Preview imagen principal
         const inputPrincipal = document.getElementById('input-imagen-principal');

@@ -4,6 +4,7 @@
 <main class="container py-4">
     <div class="row g-4">
         
+        {{-- SIDEBAR IZQUIERDO: Filtros (desktop) --}}
         <div class="col-lg-3 d-none d-lg-block">
             <div class="position-sticky" style="top: 100px;">
 
@@ -24,109 +25,25 @@
                 </div>
                 @endauth
 
-                {{-- Filtros activos --}}
-                @if($categoria || $dificultad || $tiempo || $orden !== 'recientes')
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-body py-2 px-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="small fw-bold text-muted"><i class="bi bi-funnel"></i> Filtros activos</span>
-                            <a href="/" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-0" style="font-size: 0.75rem;">
-                                <i class="bi bi-x-lg"></i> Limpiar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-                {{-- Categorías dinámicas --}}
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-header bg-white fw-bold border-0 pt-3">
-                        <i class="bi bi-bookmark" style="color: #729c48;"></i> Categorías
-                    </div>
-                    <div class="list-group list-group-flush">
-                        @foreach($categorias as $cat)
-                        @php
-                            $iconos = ['Veganos' => '🥗', 'Carnívoros' => '🥩', 'Dulceros' => '🍰'];
-                            $icono = $iconos[$cat->nombre] ?? '🍽️';
-                            $activa = $categoria == $cat->id;
-                        @endphp
-                        <a href="/?categoria={{ $cat->id }}{{ $dificultad ? '&dificultad='.$dificultad : '' }}{{ $tiempo ? '&tiempo='.$tiempo : '' }}{{ $orden !== 'recientes' ? '&orden='.$orden : '' }}" 
-                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activa ? 'active' : '' }}"
-                           style="{{ $activa ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
-                            <span>{{ $icono }} {{ $cat->nombre }}</span>
-                            @if($activa)
-                                <i class="bi bi-check-circle-fill"></i>
-                            @endif
-                        </a>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Dificultad --}}
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-header bg-white fw-bold border-0 pt-3">
-                        <i class="bi bi-speedometer2" style="color: #729c48;"></i> Dificultad
-                    </div>
-                    <div class="list-group list-group-flush">
-                        @foreach(['Fácil' => '🟢', 'Media' => '🟡', 'Difícil' => '🔴'] as $nivel => $color)
-                        @php $activaD = $dificultad === $nivel; @endphp
-                        <a href="/?dificultad={{ $nivel }}{{ $categoria ? '&categoria='.$categoria : '' }}{{ $tiempo ? '&tiempo='.$tiempo : '' }}{{ $orden !== 'recientes' ? '&orden='.$orden : '' }}" 
-                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activaD ? 'active' : '' }}"
-                           style="{{ $activaD ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
-                            <span>{{ $color }} {{ $nivel }}</span>
-                            @if($activaD)
-                                <i class="bi bi-check-circle-fill"></i>
-                            @endif
-                        </a>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Tiempo de cocción --}}
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-header bg-white fw-bold border-0 pt-3">
-                        <i class="bi bi-clock" style="color: #729c48;"></i> Tiempo
-                    </div>
-                    <div class="list-group list-group-flush">
-                        @foreach(['rapido' => '⚡ Rápido (≤15 min)', 'medio' => '🕐 Medio (16-45 min)', 'largo' => '🕑 Largo (46-90 min)', 'elaborado' => '👨‍🍳 Elaborado (+90 min)'] as $clave => $etiqueta)
-                        @php $activaT = $tiempo === $clave; @endphp
-                        <a href="/?tiempo={{ $clave }}{{ $categoria ? '&categoria='.$categoria : '' }}{{ $dificultad ? '&dificultad='.$dificultad : '' }}{{ $orden !== 'recientes' ? '&orden='.$orden : '' }}" 
-                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activaT ? 'active' : '' }}"
-                           style="{{ $activaT ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
-                            <span>{{ $etiqueta }}</span>
-                            @if($activaT)
-                                <i class="bi bi-check-circle-fill"></i>
-                            @endif
-                        </a>
-                        @endforeach
-                    </div>
-                </div>
-
-                {{-- Ordenar por --}}
-                <div class="card mb-3 border-0 shadow-sm">
-                    <div class="card-header bg-white fw-bold border-0 pt-3">
-                        <i class="bi bi-sort-down" style="color: #729c48;"></i> Ordenar por
-                    </div>
-                    <div class="list-group list-group-flush">
-                        @foreach(['recientes' => '🆕 Más recientes', 'antiguos' => '📅 Más antiguos', 'rapidos' => '⏱️ Menos tiempo', 'lentos' => '🍲 Más tiempo'] as $clave => $etiqueta)
-                        @php $activaO = $orden === $clave; @endphp
-                        <a href="/?orden={{ $clave }}{{ $categoria ? '&categoria='.$categoria : '' }}{{ $dificultad ? '&dificultad='.$dificultad : '' }}{{ $tiempo ? '&tiempo='.$tiempo : '' }}" 
-                           class="list-group-item list-group-item-action border-0 d-flex justify-content-between align-items-center {{ $activaO ? 'active' : '' }}"
-                           style="{{ $activaO ? 'background-color: #729c48; color: white; border-radius: 8px;' : '' }}">
-                            <span>{{ $etiqueta }}</span>
-                            @if($activaO)
-                                <i class="bi bi-check-circle-fill"></i>
-                            @endif
-                        </a>
-                        @endforeach
-                    </div>
-                </div>
+                @include('partials.filtros-sidebar')
 
             </div>
         </div>
 
+        {{-- CONTENIDO CENTRAL: Feed --}}
         <div class="col-lg-6 col-12">
             
+            {{-- Botón filtros en móvil (RF-101) --}}
+            <div class="d-lg-none mb-3">
+                <button class="btn btn-outline-gris w-100 rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFiltros">
+                    <i class="bi bi-funnel"></i> Filtros y categorías
+                    @if($categoria || $dificultad || $tiempo || $orden !== 'recientes')
+                        <span class="badge rounded-pill text-white ms-2" style="background-color: #729c48;">Activos</span>
+                    @endif
+                </button>
+            </div>
+
+            {{-- CTA Publicar --}}
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex mb-3">
@@ -139,12 +56,15 @@
                 </div>
             </div>
 
+            {{-- Alertas de búsqueda/filtros activos --}}
+            <div id="alertaBusqueda">
             @if(request('buscar'))
                 <div class="alert alert-success border-0 shadow-sm mb-4" style="background-color: #eaf3e3; color: #4e6e2e;">
                     <i class="bi bi-search me-2"></i> Mostrando resultados para: <strong>"{{ request('buscar') }}"</strong>
-                    <a href="/" class="float-end text-decoration-none" style="color: #729c48;">Limpiar filtro <i class="bi bi-x-circle"></i></a>
+                    <a href="/" class="float-end text-decoration-none btn-limpiar-busqueda" style="color: #729c48;">Limpiar filtro <i class="bi bi-x-circle"></i></a>
                 </div>
             @endif
+            </div>
 
             @if($categoria || $dificultad || $tiempo)
                 <div class="alert border-0 shadow-sm mb-4 d-flex align-items-center flex-wrap gap-2" style="background-color: #eaf3e3; color: #4e6e2e; border-radius: 12px;">
@@ -157,102 +77,46 @@
                         <span class="badge rounded-pill text-white px-3 py-1" style="background-color: #729c48;">{{ $dificultad }}</span>
                     @endif
                     @if($tiempo)
-                        @php
-                            $tiempoLabels = ['rapido' => '≤15 min', 'medio' => '16-45 min', 'largo' => '46-90 min', 'elaborado' => '+90 min'];
-                        @endphp
+                        @php $tiempoLabels = ['rapido' => '≤15 min', 'medio' => '16-45 min', 'largo' => '46-90 min', 'elaborado' => '+90 min']; @endphp
                         <span class="badge rounded-pill text-white px-3 py-1" style="background-color: #729c48;">{{ $tiempoLabels[$tiempo] ?? $tiempo }}</span>
                     @endif
                     <a href="/" class="ms-auto text-decoration-none fw-bold" style="color: #729c48;">Limpiar <i class="bi bi-x-circle"></i></a>
                 </div>
             @endif
 
+            {{-- Estado vacío --}}
             @if($recetas->count() == 0)
-                <div class="text-center py-5">
+                <div class="text-center py-5" id="feedVacio">
                     <i class="bi bi-emoji-frown display-4 text-muted mb-3"></i>
                     <h4 class="text-muted">No hay recetas para mostrar</h4>
                     <p class="text-muted">Prueba con otra búsqueda o sigue a nuevos usuarios.</p>
                 </div>
             @endif
 
+            {{-- Feed de recetas --}}
             <div id="feedContainer" class="row g-3">
-
                 @foreach($recetas as $receta)
-                <div class="col-md-6">
-                    <article class="card h-100 border-0 shadow-sm">
-                        
-                        <div class="card-header bg-white border-0 py-2 d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="{{ asset($receta->autor_avatar ?? 'assets/img/logo.png') }}" class="rounded-circle me-2" width="30" height="30" style="object-fit: cover;">
-                                <div>
-                                    <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">
-                                        <a href="{{ route('usuario.show', $receta->autor_id) }}" class="text-decoration-none text-dark">
-                                            {{ $receta->autor_nombre }}
-                                        </a>
-                                    </h6>
-                                </div>
-                            </div>
-
-                            <span class="badge bg-light text-dark border">{{ $receta->categoria_nombre }}</span>
-
-                            @if(Auth::check() && Auth::id() == $receta->usuario_id)
-                            <div class="d-flex gap-2">
-                                <a href="{{ route('receta.edit', $receta->id) }}" class="btn btn-link text-primary p-0 border-0 text-decoration-none">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('receta.destroy', $receta->id) }}" method="POST" onsubmit="return confirm('¿Seguro que quieres borrar esta receta?');" class="m-0">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-link text-danger p-0 border-0 text-decoration-none">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            @endif
-                        </div>
-
-                        <div class="card-body p-0">
-                            <img src="{{ asset($receta->url_imagen) }}" class="w-100" style="height: 200px; object-fit: cover;">
-                        </div>
-
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="fw-bold mb-0 text-truncate" style="max-width: 70%;">{{ $receta->titulo }}</h6>
-                                <span class="badge bg-light text-dark border"><i class="bi bi-clock"></i> {{ $receta->tiempo_coccion }}'</span>
-                            </div>
-
-                            <div class="d-flex gap-2 mt-auto">
-
-                                <a href="{{ route('receta.show', $receta->id) }}" class="btn btn-outline-success btn-sm rounded-pill w-50">
-                                    <i class="bi bi-eye"></i> Ver
-                                </a>
-                                @auth
-                                    @php
-                                        $esFavorito = auth()->user()->recetasFavoritas()->where('receta_id', $receta->id)->exists();
-                                    @endphp
-                                    <form action="{{ route('receta.favorito', $receta->id) }}" method="POST" class="w-50 m-0">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm rounded-pill w-100 {{ $esFavorito ? 'btn-danger text-white' : 'btn-outline-danger' }}">
-                                            <i class="bi {{ $esFavorito ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-                                        </button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('login') }}" class="btn btn-outline-danger btn-sm rounded-pill w-50">
-                                        <i class="bi bi-heart"></i>
-                                    </a>
-                                @endauth
-
-                            </div>
-                        </div>
-                    </article>
-                </div>
+                    @include('partials.receta-card', ['receta' => $receta, 'favoritoIds' => $favoritoIds])
                 @endforeach
             </div>
 
-            <div class="mt-4 d-flex justify-content-center">
-                {{ $recetas->withQueryString()->links('pagination::bootstrap-5') }}
+            {{-- RF-97: Infinite scroll loader --}}
+            @if($recetas->hasMorePages())
+            <div id="infinite-loader" class="text-center py-4">
+                <div class="spinner-border text-success" role="status" style="width: 2rem; height: 2rem;">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="text-muted small mt-2 mb-0">Cargando más recetas...</p>
+            </div>
+            @endif
+
+            {{-- Fin del feed --}}
+            <div id="feed-end" class="text-center py-3 d-none">
+                <p class="text-muted small mb-0"><i class="bi bi-check-circle"></i> Has visto todas las recetas</p>
             </div>
         </div>
 
+        {{-- SIDEBAR DERECHO: Populares --}}
         <div class="col-lg-3 d-none d-lg-block">
             <div class="position-sticky" style="top: 100px;">
 
@@ -278,10 +142,347 @@
     </div>
 </main>
 
+{{-- RF-101: Offcanvas de filtros para móvil --}}
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasFiltros" aria-labelledby="offcanvasFiltrosLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="offcanvasFiltrosLabel" style="color: #729c48;">
+            <i class="bi bi-funnel"></i> Filtros
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+    </div>
+    <div class="offcanvas-body">
+        @include('partials.filtros-sidebar')
+    </div>
+</div>
+
 <style>
     .popular-item:hover {
         background-color: #f8f9fa;
         transform: translateX(5px);
     }
+
+    /* RF-99: Animación de entrada de cards */
+    .receta-card-item {
+        animation: fadeInUp 0.4s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Stagger animation for initial load */
+    .receta-card-item:nth-child(1) { animation-delay: 0s; }
+    .receta-card-item:nth-child(2) { animation-delay: 0.05s; }
+    .receta-card-item:nth-child(3) { animation-delay: 0.1s; }
+    .receta-card-item:nth-child(4) { animation-delay: 0.15s; }
+    .receta-card-item:nth-child(5) { animation-delay: 0.2s; }
+    .receta-card-item:nth-child(6) { animation-delay: 0.25s; }
+    .receta-card-item:nth-child(7) { animation-delay: 0.3s; }
+    .receta-card-item:nth-child(8) { animation-delay: 0.35s; }
+
+    /* RF-100: Spinner de búsqueda (dentro del feed) */
+    .search-spinner {
+        display: none;
+        width: 1rem;
+        height: 1rem;
+    }
+    .search-spinner.active {
+        display: inline-block;
+    }
+
+    /* RF-100: Skeleton loader para feed */
+    .feed-loading-state {
+        opacity: 0.5;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const feedContainer = document.getElementById('feedContainer');
+    const infiniteLoader = document.getElementById('infinite-loader');
+    const feedEnd = document.getElementById('feed-end');
+    const alertaBusqueda = document.getElementById('alertaBusqueda');
+    const feedVacio = document.getElementById('feedVacio');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = {{ $recetas->hasMorePages() ? 'true' : 'false' }};
+
+    // ============================================
+    // RF-97: INFINITE SCROLL con IntersectionObserver
+    // ============================================
+    if (infiniteLoader) {
+        const observer = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting && hasMore && !isLoading) {
+                cargarMasRecetas();
+            }
+        }, { rootMargin: '200px' });
+
+        observer.observe(infiniteLoader);
+    }
+
+    function cargarMasRecetas() {
+        if (isLoading || !hasMore) return;
+        isLoading = true;
+        currentPage++;
+
+        // Construir URL con los filtros actuales
+        const params = new URLSearchParams(window.location.search);
+        params.set('page', currentPage);
+
+        fetch('/?' + params.toString(), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.html && data.html.trim()) {
+                // RF-99: Insertar con stagger animation
+                const temp = document.createElement('div');
+                temp.innerHTML = data.html;
+                const newCards = temp.querySelectorAll('.receta-card-item');
+                
+                newCards.forEach(function(card, i) {
+                    card.style.opacity = '0';
+                    card.style.animationDelay = (i * 0.05) + 's';
+                    feedContainer.appendChild(card);
+                });
+
+                // Bind AJAX favoritos a los nuevos botones
+                bindFavoritos();
+            }
+
+            hasMore = data.hasMore;
+            isLoading = false;
+
+            if (!hasMore) {
+                infiniteLoader.classList.add('d-none');
+                feedEnd.classList.remove('d-none');
+            }
+        })
+        .catch(err => {
+            console.error('Error cargando recetas:', err);
+            isLoading = false;
+        });
+    }
+
+    // ============================================
+    // RF-98: BÚSQUEDA AJAX con debounce (sin recargas)
+    // ============================================
+    const searchInput = document.getElementById('searchInputNav');
+    let searchTimeout = null;
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+
+            // Mostrar spinner
+            const spinner = document.getElementById('searchSpinner');
+            if (spinner) spinner.classList.add('active');
+
+            searchTimeout = setTimeout(function() {
+                if (query.length >= 2) {
+                    buscarAJAX(query);
+                } else if (query.length === 0) {
+                    // RF-98: Restaurar feed SIN recarga de página
+                    restaurarFeed();
+                }
+                if (spinner) spinner.classList.remove('active');
+            }, 400);
+        });
+    }
+
+    // RF-98: Búsqueda AJAX sin recargar
+    function buscarAJAX(query) {
+        // RF-100: Mostrar loading
+        feedContainer.classList.add('feed-loading-state');
+        
+        // RF-98: Actualizar URL sin recargar
+        const url = new URL(window.location);
+        url.searchParams.set('buscar', query);
+        history.pushState({feedSearch: true, buscar: query}, '', url);
+
+        fetch('/?buscar=' + encodeURIComponent(query), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            feedContainer.innerHTML = data.html || '';
+            feedContainer.classList.remove('feed-loading-state');
+            
+            hasMore = data.hasMore;
+            currentPage = 1;
+            
+            if (infiniteLoader) {
+                infiniteLoader.classList.toggle('d-none', !hasMore);
+            }
+            if (feedEnd) {
+                feedEnd.classList.toggle('d-none', hasMore || data.total === 0);
+            }
+
+            // Actualizar alerta de búsqueda
+            actualizarAlertaBusqueda(query, data.total);
+
+            // Ocultar/mostrar estado vacío
+            if (feedVacio) {
+                feedVacio.classList.toggle('d-none', data.total > 0);
+            }
+
+            // Mostrar contador de resultados
+            if (data.total !== undefined) {
+                mostrarToast(data.total + ' receta(s) encontrada(s)', 'info');
+            }
+
+            // Bind favoritos en nuevos elementos
+            bindFavoritos();
+        })
+        .catch(err => {
+            console.error('Error en búsqueda:', err);
+            feedContainer.classList.remove('feed-loading-state');
+        });
+    }
+
+    // RF-98: Restaurar feed original sin recargar
+    function restaurarFeed() {
+        feedContainer.classList.add('feed-loading-state');
+
+        // Limpiar URL
+        const url = new URL(window.location);
+        url.searchParams.delete('buscar');
+        history.pushState({feedSearch: true}, '', url);
+
+        fetch('/?' + url.searchParams.toString(), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            feedContainer.innerHTML = data.html || '';
+            feedContainer.classList.remove('feed-loading-state');
+            
+            hasMore = data.hasMore;
+            currentPage = 1;
+
+            if (infiniteLoader) {
+                infiniteLoader.classList.toggle('d-none', !hasMore);
+            }
+            if (feedEnd) {
+                feedEnd.classList.toggle('d-none', true);
+            }
+
+            // Limpiar alerta de búsqueda
+            if (alertaBusqueda) alertaBusqueda.innerHTML = '';
+            if (feedVacio) feedVacio.classList.toggle('d-none', (data.total || 0) > 0);
+
+            bindFavoritos();
+        })
+        .catch(err => {
+            console.error('Error restaurando feed:', err);
+            feedContainer.classList.remove('feed-loading-state');
+        });
+    }
+
+    // RF-98: Actualizar alerta de búsqueda dinámicamente
+    function actualizarAlertaBusqueda(query, total) {
+        if (!alertaBusqueda) return;
+        if (query && query.length > 0) {
+            alertaBusqueda.innerHTML = `
+                <div class="alert alert-success border-0 shadow-sm mb-4" style="background-color: #eaf3e3; color: #4e6e2e;">
+                    <i class="bi bi-search me-2"></i> Mostrando ${total} resultado(s) para: <strong>"${query}"</strong>
+                    <a href="#" class="float-end text-decoration-none btn-limpiar-busqueda" style="color: #729c48;" onclick="event.preventDefault(); document.getElementById('searchInputNav').value=''; document.getElementById('searchInputNav').dispatchEvent(new Event('input'));">
+                        Limpiar filtro <i class="bi bi-x-circle"></i>
+                    </a>
+                </div>
+            `;
+        } else {
+            alertaBusqueda.innerHTML = '';
+        }
+    }
+
+    // RF-98: Manejar botón atrás del navegador (solo para búsquedas AJAX que usamos pushState)
+    window.addEventListener('popstate', function(e) {
+        // Solo manejar estados que nosotros empujamos con pushState
+        if (!e.state || !e.state.feedSearch) return;
+        
+        const params = new URLSearchParams(window.location.search);
+        const buscar = params.get('buscar') || '';
+        if (searchInput) searchInput.value = buscar;
+        if (buscar.length >= 2) {
+            buscarAJAX(buscar);
+        } else {
+            restaurarFeed();
+        }
+    });
+
+    // ============================================
+    // RF-102: FAVORITOS sin recarga (AJAX)
+    // ============================================
+    function bindFavoritos() {
+        document.querySelectorAll('.btn-favorito').forEach(function(btn) {
+            // Evitar doble binding
+            if (btn.dataset.bound) return;
+            btn.dataset.bound = 'true';
+
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.dataset.url;
+                const boton = this;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Actualizar apariencia del botón
+                    const icono = boton.querySelector('i');
+                    if (data.esFavorito) {
+                        boton.classList.remove('btn-outline-danger');
+                        boton.classList.add('btn-danger', 'text-white');
+                        icono.classList.remove('bi-heart');
+                        icono.classList.add('bi-heart-fill');
+                    } else {
+                        boton.classList.remove('btn-danger', 'text-white');
+                        boton.classList.add('btn-outline-danger');
+                        icono.classList.remove('bi-heart-fill');
+                        icono.classList.add('bi-heart');
+                    }
+
+                    // RF-100: Toast de confirmación
+                    mostrarToast(data.mensaje, 'success');
+                })
+                .catch(err => {
+                    console.error('Error favorito:', err);
+                    mostrarToast('Error al actualizar favoritos', 'danger');
+                });
+            });
+        });
+    }
+
+    // Bind inicial
+    bindFavoritos();
+});
+</script>
 @endsection

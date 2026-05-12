@@ -11,7 +11,7 @@
                         <h2 class="fw-bold mb-1" style="color: #729c48;">{{ $usuario->name }}</h2>
                         <p class="text-muted mb-2">{{ $usuario->email }}</p>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('usuario.seguidores', $usuario->id) }}" class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 text-decoration-none">{{ $usuario->seguidores()->count() }} seguidores</a>
+                            <a href="{{ route('usuario.seguidores', $usuario->id) }}" class="badge rounded-pill px-3 py-2 text-decoration-none text-white" style="background-color: #729c48;">{{ $usuario->seguidores()->count() }} seguidores</a>
                             <a href="{{ route('usuario.seguidos', $usuario->id) }}" class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-2 text-decoration-none">{{ $usuario->seguidos()->count() }} seguidos</a>
                         </div>
                     </div>

@@ -12,6 +12,7 @@ use App\Notifications\NuevaValoracion;
 
 class InteraccionController extends Controller
 {
+    // RF-102: Comentar con soporte AJAX
     public function comentar(Request $request, $id)
     {
         // validaciones del comentario
@@ -37,10 +38,24 @@ class InteraccionController extends Controller
             ));
         }
 
+        // RF-102: Si es AJAX, devolver JSON sin recargar
+        if ($request->ajax()) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            return response()->json([
+                'success'   => true,
+                'mensaje'   => '¡Gracias por compartir tu opinión!',
+                'contenido' => e($comentario->contenido),
+                'autor'     => e($user->name),
+                'avatar'    => asset($user->avatar ?? 'assets/img/logo.png'),
+                'fecha'     => $comentario->created_at->format('d/m/Y H:i'),
+            ]);
+        }
+
         return back()->with('success', '¡Gracias por compartir tu opinión!');
     }
     
-    // puntuaciones por estrellas
+    // RF-102: Valorar con soporte AJAX
     public function valorar(Request $request, $id)
     {
         // recibe 1 estrella o 5 como max
@@ -62,15 +77,35 @@ class InteraccionController extends Controller
             ));
         }
 
+        // RF-102: Si es AJAX, devolver JSON con la nueva media
+        if ($request->ajax()) {
+            $nuevaMedia = Valoracion::where('receta_id', $id)->avg('puntuacion') ?? 0;
+            return response()->json([
+                'success'    => true,
+                'mensaje'    => '¡Gracias por tu valoración!',
+                'media'      => round($nuevaMedia, 1),
+                'puntuacion' => $valoracion->puntuacion,
+            ]);
+        }
+
         return back()->with('success', '¡Gracias por tu valoración!');
     }
 
-    // Añadir y quitar favoritos
-    public function toggleFavorito($id)
+    // Añadir y quitar favoritos (RF-102: AJAX sin recarga)
+    public function toggleFavorito(Request $request, $id)
     {
         /** @var \App\Models\User $usuario */
         $usuario = Auth::user();
-        $usuario->recetasFavoritas()->toggle($id);
+        $resultado = $usuario->recetasFavoritas()->toggle($id);
+
+        // Si es AJAX, devolver JSON sin recargar
+        if ($request->ajax()) {
+            $esFavorito = in_array($id, $resultado['attached']);
+            return response()->json([
+                'esFavorito' => $esFavorito,
+                'mensaje'    => $esFavorito ? 'Receta guardada en favoritos' : 'Receta eliminada de favoritos',
+            ]);
+        }
 
         return back()->with('success', 'Tu lista de favoritos ha sido actualizada.');
     }

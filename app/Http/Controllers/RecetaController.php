@@ -96,6 +96,32 @@ class RecetaController extends Controller
 
         $recetas = $query->paginate(8);
 
+        // Precargar IDs de favoritos del usuario 
+        $favoritoIds = [];
+        if (Auth::check()) {
+            /** @var \App\Models\User $authUser */
+            $authUser = Auth::user();
+            $favoritoIds = $authUser->recetasFavoritas()->pluck('receta_id')->toArray();
+        }
+
+        // Si es petición AJAX, devolver solo las cards HTML
+        if ($request->ajax()) {
+            $html = '';
+            foreach ($recetas as $receta) {
+                $html .= view('partials.receta-card', [
+                    'receta' => $receta,
+                    'favoritoIds' => $favoritoIds,
+                ])->render();
+            }
+
+            return response()->json([
+                'html'     => $html,
+                'hasMore'  => $recetas->hasMorePages(),
+                'nextPage' => $recetas->currentPage() + 1,
+                'total'    => $recetas->total(),
+            ]);
+        }
+
         // Datos para los filtros del sidebar
         $categorias = \App\Models\Categoria::all();
 
@@ -105,14 +131,15 @@ class RecetaController extends Controller
             ->get();
 
         return view('index', [
-            'recetas'    => $recetas,
-            'populares'  => $populares,
-            'categorias' => $categorias,
-            'buscar'     => $buscar,
-            'categoria'  => $categoria,
-            'dificultad' => $dificultad,
-            'tiempo'     => $tiempo,
-            'orden'      => $orden,
+            'recetas'     => $recetas,
+            'populares'   => $populares,
+            'categorias'  => $categorias,
+            'favoritoIds' => $favoritoIds,
+            'buscar'      => $buscar,
+            'categoria'   => $categoria,
+            'dificultad'  => $dificultad,
+            'tiempo'      => $tiempo,
+            'orden'       => $orden,
         ]);
     }
 

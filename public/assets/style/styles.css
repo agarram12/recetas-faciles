@@ -255,6 +255,94 @@ a:hover {
         margin-top: 10px;
     }
 
+    /* RF-101: Mejoras responsive móvil */
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    h3 {
+        font-size: 1.15rem;
+    }
+
+    h4 {
+        font-size: 1.05rem;
+    }
+
+    /* RF-101: Cards más compactas en móvil */
+    .card {
+        border-radius: 12px;
+    }
+
+    .card-img-top {
+        max-height: 220px;
+    }
+
+    /* RF-101: Formularios más cómodos en móvil */
+    .form-control,
+    .form-select {
+        font-size: 16px !important; /* Prevenir zoom en iOS */
+    }
+
+    /* RF-101: Botones tactiles */
+    .btn {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-sm {
+        min-height: 36px;
+    }
+
+    /* RF-101: Navbar ajustada */
+    .navbar-brand img {
+        height: 32px !important;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    /* RF-101: Stat boxes en perfil */
+    .stat-box {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    /* RF-101: Offcanvas */
+    .offcanvas {
+        max-width: 85vw;
+    }
+
+    /* RF-101: Detalle de receta */
+    .list-group-item .badge {
+        width: 26px;
+        height: 26px;
+        font-size: 0.75rem;
+    }
+}
+
+/* RF-101: Pantallas muy pequeñas */
+@media (max-width: 400px) {
+    .container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .navbar-brand span,
+    .navbar-brand:not(img) {
+        font-size: 0.9rem;
+    }
+
+    .card-body {
+        padding: 0.75rem;
+    }
 }
 
 /* Estilos páginas crear */
