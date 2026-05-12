@@ -27,6 +27,10 @@
         "SESSION_DRIVER": "cookie",
         "CACHE_DRIVER": "array",
         "VIEW_COMPILED_PATH": "/tmp",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
         "NODE_VERSION": "20.x"
     }
 }
