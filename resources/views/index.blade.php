@@ -10,9 +10,27 @@
 
                 @auth
                 <div class="card mb-3 shadow-sm border-0">
-                    <div class="card-body text-center">
+                    <div class="card-body text-center p-4">
                         <img src="{{ asset(Auth::user()->avatar) }}" class="rounded-circle mb-3 border border-3 border-white shadow" width="80" height="80" style="object-fit: cover;">
-                        <h5 class="card-title fw-bold" style="color: #729c48;">{{ Auth::user()->name }}</h5>
+                        <h5 class="card-title fw-bold mb-1" style="color: #729c48;">{{ Auth::user()->name }}</h5>
+                        <p class="text-muted small mb-3">{{ Auth::user()->email }}</p>
+                        
+                        {{-- Estadísticas --}}
+                        <div class="row g-0 mb-4 py-2 border-top border-bottom" style="border-color: #f1f3f5 !important;">
+                            <div class="col-6 border-end" style="border-color: #f1f3f5 !important;">
+                                <div class="fw-bold fs-5 text-dark">{{ Auth::user()->recetas()->count() }}</div>
+                                <div class="text-muted small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Recetas</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="fw-bold fs-5 text-dark">{{ Auth::user()->seguidores()->count() }}</div>
+                                <div class="text-muted small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Seguidores</div>
+                            </div>
+                        </div>
+
+                        {{-- Botón para ver perfil --}}
+                        <a href="{{ route('dashboard') }}" class="btn btn-outline-primary btn-sm w-100 rounded-pill py-2 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-person"></i> Ver mi perfil
+                        </a>
                     </div>
                 </div>
                 @else
@@ -25,24 +43,12 @@
                 </div>
                 @endauth
 
-                @include('partials.filtros-sidebar')
-
             </div>
         </div>
 
         {{-- CONTENIDO CENTRAL: Feed --}}
         <div class="col-lg-6 col-12">
             
-            {{-- Botón filtros en móvil --}}
-            <div class="d-lg-none mb-3">
-                <button class="btn btn-outline-gris w-100 rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFiltros">
-                    <i class="bi bi-funnel"></i> Filtros y categorías
-                    @if($categoria || $dificultad || $tiempo || $orden !== 'recientes')
-                        <span class="badge rounded-pill text-white ms-2" style="background-color: #729c48;">Activos</span>
-                    @endif
-                </button>
-            </div>
-
             {{-- CTA Publicar --}}
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-body">
@@ -52,6 +58,112 @@
                     </div>
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('receta.create') }}" class="btn btn-sm px-4 rounded-pill text-white text-decoration-none" style="background-color: #729c48;">Publicar</a>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Botón y Panel de Filtros Colapsable --}}
+            <div class="mb-4">
+                <button class="btn btn-white w-100 rounded-pill shadow-sm d-flex align-items-center justify-content-between px-4 py-3 btn-toggle-filtros fw-semibold" 
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#panelFiltros" 
+                        aria-expanded="{{ ($categoria || $dificultad || $tiempo || $orden !== 'recientes') ? 'true' : 'false' }}" 
+                        aria-controls="panelFiltros"
+                        style="background-color: #fff; border: 1px solid #e9ecef; transition: all 0.2s ease;">
+                    <span class="d-flex align-items-center gap-2">
+                        <i class="bi bi-funnel text-success fs-5"></i>
+                        <span>Filtrar y ordenar recetas</span>
+                        @if($categoria || $dificultad || $tiempo || $orden !== 'recientes')
+                            <span class="badge rounded-pill bg-success text-white ms-2" style="font-size: 0.75rem; padding: 4px 8px;">Activos</span>
+                        @endif
+                    </span>
+                    <i class="bi bi-chevron-down text-muted" id="chevronFiltros"></i>
+                </button>
+                
+                <div class="collapse {{ ($categoria || $dificultad || $tiempo || $orden !== 'recientes') ? 'show' : '' }} mt-3" id="panelFiltros">
+                    <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+                        <div class="card-body p-4">
+                            <form action="/" method="GET" id="formFiltros">
+                                @if(request('buscar'))
+                                    <input type="hidden" name="buscar" value="{{ request('buscar') }}">
+                                @endif
+                                
+                                <div class="row g-3">
+                                    {{-- Categoría --}}
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <label for="filtroCategoria" class="form-label mb-2">
+                                            <i class="bi bi-bookmark text-success me-1"></i> Categoría
+                                        </label>
+                                        <select name="categoria" id="filtroCategoria" class="form-select cursor-pointer" onchange="this.form.submit()">
+                                            <option value="">Todas</option>
+                                            @foreach($categorias as $cat)
+                                                @php
+                                                    $iconos = ['Veganos' => '🥗', 'Carnívoros' => '🥩', 'Dulceros' => '🍰'];
+                                                    $icono = $iconos[$cat->nombre] ?? '🍽️';
+                                                @endphp
+                                                <option value="{{ $cat->id }}" {{ $categoria == $cat->id ? 'selected' : '' }}>
+                                                    {{ $icono }} {{ $cat->nombre }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    {{-- Dificultad --}}
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <label for="filtroDificultad" class="form-label mb-2">
+                                            <i class="bi bi-speedometer2 text-success me-1"></i> Dificultad
+                                        </label>
+                                        <select name="dificultad" id="filtroDificultad" class="form-select cursor-pointer" onchange="this.form.submit()">
+                                            <option value="">Cualquiera</option>
+                                            @foreach(['Fácil' => '🟢 Fácil', 'Media' => '🟡 Media', 'Difícil' => '🔴 Difícil'] as $nivel => $etiqueta)
+                                                <option value="{{ $nivel }}" {{ $dificultad === $nivel ? 'selected' : '' }}>
+                                                    {{ $etiqueta }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    {{-- Tiempo --}}
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <label for="filtroTiempo" class="form-label mb-2">
+                                            <i class="bi bi-clock text-success me-1"></i> Tiempo
+                                        </label>
+                                        <select name="tiempo" id="filtroTiempo" class="form-select cursor-pointer" onchange="this.form.submit()">
+                                            <option value="">Cualquiera</option>
+                                            @foreach(['rapido' => '⚡ Rápido (≤15 min)', 'medio' => '🕐 Medio (16-45 min)', 'largo' => '🕑 Largo (46-90 min)', 'elaborado' => '👨‍🍳 Elaborado (+90 min)'] as $clave => $etiqueta)
+                                                <option value="{{ $clave }}" {{ $tiempo === $clave ? 'selected' : '' }}>
+                                                    {{ $etiqueta }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    {{-- Ordenar por --}}
+                                    <div class="col-md-3 col-sm-6 col-12">
+                                        <label for="filtroOrden" class="form-label mb-2">
+                                            <i class="bi bi-sort-down text-success me-1"></i> Ordenar por
+                                        </label>
+                                        <select name="orden" id="filtroOrden" class="form-select cursor-pointer" onchange="this.form.submit()">
+                                            @foreach(['recientes' => '🆕 Más recientes', 'antiguos' => '📅 Más antiguos', 'rapidos' => '⏱️ Menos tiempo', 'lentos' => '🍲 Más tiempo'] as $clave => $etiqueta)
+                                                <option value="{{ $clave }}" {{ $orden === $clave ? 'selected' : '' }}>
+                                                    {{ $etiqueta }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {{-- Limpiar filtros --}}
+                                @if($categoria || $dificultad || $tiempo || $orden !== 'recientes')
+                                    <div class="d-flex justify-content-end mt-3 pt-3 border-top">
+                                        <a href="/" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-2 d-flex align-items-center gap-1" style="font-size: 0.85rem; min-height: auto;">
+                                            <i class="bi bi-x-circle"></i> Limpiar todos los filtros
+                                        </a>
+                                    </div>
+                                @endif
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -125,11 +237,14 @@
                         <h5 class="fw-bold mb-4" style="color: #333;">Populares</h5>
                         
                         @foreach($populares as $plato)
-                            <a href="{{ route('receta.show', $plato->id) }}" class="text-decoration-none d-block mb-3 p-2 rounded popular-item" style="transition: all 0.2s ease;">
-                                <h6 class="fw-bold mb-1 text-dark">{{ $plato->titulo }}</h6>
-                                <div class="d-flex align-items-center gap-1" style="color: #eab308; font-size: 0.95rem;">
-                                    <i class="bi bi-star-fill"></i>
-                                    <span class="text-muted fw-bold ms-1">{{ round($plato->valoraciones_avg_puntuacion, 1) }}</span>
+                            <a href="{{ route('receta.show', $plato->id) }}" class="text-decoration-none d-flex align-items-center gap-3 mb-3 p-2 rounded popular-item" style="transition: all 0.2s ease;">
+                                <img src="{{ asset($plato->url_imagen) }}" alt="{{ $plato->titulo }}" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #f0f0f0;">
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1 text-dark" style="font-size: 0.9rem; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">{{ $plato->titulo }}</h6>
+                                    <div class="d-flex align-items-center gap-1" style="color: #eab308; font-size: 0.85rem;">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span class="text-muted fw-bold ms-1">{{ round($plato->valoraciones_avg_puntuacion, 1) }}</span>
+                                    </div>
                                 </div>
                             </a>
                         @endforeach
@@ -142,20 +257,20 @@
     </div>
 </main>
 
-{{-- Offcanvas de filtros para móvil --}}
-<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasFiltros" aria-labelledby="offcanvasFiltrosLabel">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold" id="offcanvasFiltrosLabel" style="color: #729c48;">
-            <i class="bi bi-funnel"></i> Filtros
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
-    </div>
-    <div class="offcanvas-body">
-        @include('partials.filtros-sidebar')
-    </div>
-</div>
-
 <style>
+    .btn-toggle-filtros:hover {
+        background-color: #f8f9fa !important;
+        border-color: #d1d5db !important;
+    }
+
+    .btn-toggle-filtros[aria-expanded="true"] #chevronFiltros {
+        transform: rotate(180deg);
+    }
+
+    #chevronFiltros {
+        transition: transform 0.2s ease;
+    }
+
     .popular-item:hover {
         background-color: #f8f9fa;
         transform: translateX(5px);
@@ -315,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
         url.searchParams.set('buscar', query);
         history.pushState({feedSearch: true, buscar: query}, '', url);
 
-        fetch('/?buscar=' + encodeURIComponent(query), {
+        fetch('/?' + url.searchParams.toString(), {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
