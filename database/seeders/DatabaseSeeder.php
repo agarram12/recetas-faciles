@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,13 +13,328 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // buscar el archivo SQL con la estructura y datos de prueba
-        $ruta_script = database_path('recetas_db.sql');
-        // obtener contenido del archivo SQL
-        $sql = file_get_contents($ruta_script);
-        // ejecución
-        DB::unprepared($sql);
-        // mensaje de éxito
-        $this->command->info('BBDD cargada con éxito');
+        // Solo insertar si no hay datos
+        if (DB::table('users')->count() > 0) {
+            $this->command->info('La BD ya tiene datos, seeder omitido.');
+            return;
+        }
+
+        $password = Hash::make('password');
+
+        // ── Usuarios ──────────────────────────────────────────────
+        DB::table('users')->insert([
+            ['name' => 'Administrador', 'email' => 'admin@recetasfaciles.com', 'password' => $password, 'descripcion' => 'Administrador de la plataforma.'],           // id=1
+            ['name' => 'Antonio Cocinitas', 'email' => 'antonio@email.com', 'password' => $password, 'descripcion' => 'Amante de lo tradicional.'],                     // id=2
+            ['name' => 'María Chef', 'email' => 'maria@email.com', 'password' => $password, 'descripcion' => 'Especialista en postres y repostería creativa.'],          // id=3
+            ['name' => 'VeganLife', 'email' => 'vegan@email.com', 'password' => $password, 'descripcion' => 'Recetas 100% plant-based.'],                               // id=4
+            ['name' => 'Carlos Parrilla', 'email' => 'carlos@email.com', 'password' => $password, 'descripcion' => 'Loco por la carne y las brasas.'],                  // id=5
+            ['name' => 'Laura Saludable', 'email' => 'laura@email.com', 'password' => $password, 'descripcion' => 'Nutrición y sabor van de la mano.'],                 // id=6
+            ['name' => 'Chef Italiano', 'email' => 'italiano@email.com', 'password' => $password, 'descripcion' => 'Pasta, pizza y mucho amore.'],                      // id=7
+            ['name' => 'Sabor Oriental', 'email' => 'oriental@email.com', 'password' => $password, 'descripcion' => 'Cocina asiática y fusión.'],                       // id=8
+        ]);
+
+        // ── Categorías ────────────────────────────────────────────
+        DB::table('categorias')->insert([
+            ['nombre' => 'Veganos', 'descripcion' => 'Recetas 100% plant-based y saludables.'],             // id=1
+            ['nombre' => 'Carnívoros', 'descripcion' => 'Las mejores recetas para amantes de la carne.'],   // id=2
+            ['nombre' => 'Dulceros', 'descripcion' => 'Postres y delicias para los más golosos.'],          // id=3
+        ]);
+
+        // ── Recetas (25 recetas) ──────────────────────────────────
+        DB::table('recetas')->insert([
+            // --- Antonio Cocinitas (id=2) ---
+            ['usuario_id' => 2, 'categoria_id' => 2, 'titulo' => 'Tortilla de Patatas', 'descripcion' => 'La clásica tortilla española, jugosa por dentro y dorada por fuera.', 'pasos' => 'Pelar y cortar las patatas en láminas finas. Freír las patatas en aceite a fuego medio. Batir los huevos y salpimentar. Mezclar patatas con huevo batido. Cuajar en sartén 4 min por cada lado.', 'url_imagen' => 'assets/img/tortilla.jpg', 'tiempo_coccion' => 40, 'dificultad' => 'Media'],
+            ['usuario_id' => 2, 'categoria_id' => 2, 'titulo' => 'Croquetas de Jamón', 'descripcion' => 'Croquetas cremosas por dentro y crujientes por fuera, con jamón ibérico.', 'pasos' => 'Hacer bechamel espesa con mantequilla, harina y leche. Añadir jamón picado fino. Dejar enfriar la masa 4 horas en nevera. Formar croquetas, pasar por huevo y pan rallado. Freír en aceite caliente hasta dorar.', 'url_imagen' => 'assets/img/croquetas.png', 'tiempo_coccion' => 60, 'dificultad' => 'Difícil'],
+            ['usuario_id' => 2, 'categoria_id' => 2, 'titulo' => 'Paella Valenciana', 'descripcion' => 'La auténtica paella con pollo, conejo y judías verdes.', 'pasos' => 'Sofreír pollo y conejo troceados. Añadir judía verde y garrofón. Incorporar tomate rallado y pimentón. Añadir agua y cocer 20 min. Echar el arroz y cocinar 18 min sin mover.', 'url_imagen' => 'assets/img/paella.png', 'tiempo_coccion' => 90, 'dificultad' => 'Difícil'],
+            ['usuario_id' => 2, 'categoria_id' => 2, 'titulo' => 'Empanadas Argentinas', 'descripcion' => 'Empanadas de carne al horno con masa casera y relleno jugoso.', 'pasos' => 'Preparar la masa con harina, manteca y agua. Sofreír cebolla, carne picada y especias. Añadir huevo duro picado y aceitunas. Rellenar los discos y hacer el repulgue. Hornear a 200°C durante 25 minutos.', 'url_imagen' => 'assets/img/empanadas.png', 'tiempo_coccion' => 75, 'dificultad' => 'Media'],
+
+            // --- María Chef (id=3) ---
+            ['usuario_id' => 3, 'categoria_id' => 3, 'titulo' => 'Tarta de Queso', 'descripcion' => 'Tarta de queso al horno estilo San Sebastián, cremosa y con exterior caramelizado.', 'pasos' => 'Triturar galletas con mantequilla para la base. Mezclar queso crema, azúcar, huevos y nata. Verter sobre la base y hornear a 200°C. Dejar enfriar en el horno con puerta entreabierta. Refrigerar mínimo 4 horas.', 'url_imagen' => 'assets/img/cheesecake.jpg', 'tiempo_coccion' => 50, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 3, 'categoria_id' => 3, 'titulo' => 'Brownie de Chocolate', 'descripcion' => 'Brownie intenso y jugoso, con interior fundente y nueces crujientes.', 'pasos' => 'Fundir chocolate negro con mantequilla. Batir huevos con azúcar hasta espumar. Mezclar todo con harina tamizada y nueces. Verter en molde engrasado. Hornear a 180°C durante 25 minutos.', 'url_imagen' => 'assets/img/brownie.png', 'tiempo_coccion' => 35, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 3, 'categoria_id' => 3, 'titulo' => 'Crepes de Nutella y Fresas', 'descripcion' => 'Crepes finas rellenas de Nutella con fresas frescas y nata montada.', 'pasos' => 'Mezclar harina, huevos, leche y mantequilla fundida. Dejar reposar la masa 30 min. Cocinar crepes finas en sartén antiadherente. Untar con Nutella y añadir fresas laminadas. Doblar y decorar con azúcar glas y nata.', 'url_imagen' => 'assets/img/crepes.png', 'tiempo_coccion' => 30, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 3, 'categoria_id' => 3, 'titulo' => 'Tiramisú Clásico', 'descripcion' => 'El postre italiano por excelencia, con mascarpone, café y cacao.', 'pasos' => 'Separar yemas de claras. Batir yemas con azúcar y mezclar con mascarpone. Montar claras a punto de nieve e incorporar. Mojar bizcochos en café con amaretto. Montar capas alternas y espolvorear cacao.', 'url_imagen' => 'assets/img/cheesecake.jpg', 'tiempo_coccion' => 30, 'dificultad' => 'Media'],
+
+            // --- VeganLife (id=4) ---
+            ['usuario_id' => 4, 'categoria_id' => 1, 'titulo' => 'Ensalada Fresca Mediterránea', 'descripcion' => 'Ensalada colorida con tomate, pepino, aguacate y vinagreta de limón.', 'pasos' => 'Lavar y cortar lechuga, tomate y pepino. Laminar aguacate maduro. Añadir aceitunas negras y cebolla morada. Preparar vinagreta con limón, aceite y mostaza. Aliñar y servir inmediatamente.', 'url_imagen' => 'assets/img/salad.jpg', 'tiempo_coccion' => 10, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 4, 'categoria_id' => 1, 'titulo' => 'Hummus Casero', 'descripcion' => 'Hummus cremoso de garbanzos con tahini, perfecto para dipear.', 'pasos' => 'Escurrir y enjuagar los garbanzos cocidos. Triturar con tahini, zumo de limón y ajo. Añadir aceite de oliva y agua hasta textura cremosa. Salpimentar al gusto. Servir con pimentón, aceite y pan de pita.', 'url_imagen' => 'assets/img/hummus.png', 'tiempo_coccion' => 10, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 4, 'categoria_id' => 1, 'titulo' => 'Smoothie Bowl de Açaí', 'descripcion' => 'Bowl energético y colorido con açaí, frutas frescas y granola.', 'pasos' => 'Triturar açaí congelado con plátano y leche vegetal. Verter en un bowl con textura espesa. Decorar con granola, arándanos y fresas. Añadir semillas de chía y coco rallado. Servir inmediatamente bien frío.', 'url_imagen' => 'assets/img/smoothie.png', 'tiempo_coccion' => 5, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 4, 'categoria_id' => 1, 'titulo' => 'Tacos Veganos de Coliflor', 'descripcion' => 'Tacos crujientes con coliflor especiada, guacamole y pico de gallo.', 'pasos' => 'Cortar coliflor en ramilletes pequeños. Rebozar con especias mexicanas y hornear. Preparar guacamole con aguacate y lima. Hacer pico de gallo con tomate and cilantro. Montar los tacos con tortillas de maíz.', 'url_imagen' => 'assets/img/tacos.png', 'tiempo_coccion' => 35, 'dificultad' => 'Media'],
+
+            // --- Carlos Parrilla (id=5) ---
+            ['usuario_id' => 5, 'categoria_id' => 2, 'titulo' => 'Costillas BBQ', 'descripcion' => 'Costillas de cerdo a baja temperatura con salsa barbacoa casera.', 'pasos' => 'Marinar costillas con rub de especias toda la noche. Cocinar a 130°C durante 3 horas. Preparar salsa BBQ con ketchup, mostaza y miel. Glasear las costillas con la salsa. Gratinar 5 min a temperatura alta.', 'url_imagen' => 'assets/img/bbq.jpg', 'tiempo_coccion' => 120, 'dificultad' => 'Media'],
+            ['usuario_id' => 5, 'categoria_id' => 2, 'titulo' => 'Tacos al Pastor', 'descripcion' => 'Tacos mexicanos con carne de cerdo adobada, piña y cilantro.', 'pasos' => 'Marinar cerdo con achiote, chiles y especias. Asar la carne en sartén bien caliente. Cortar en tiras finas. Calentar tortillas de maíz. Servir con piña, cebolla, cilantro y lima.', 'url_imagen' => 'assets/img/tacos.png', 'tiempo_coccion' => 45, 'dificultad' => 'Media'],
+            ['usuario_id' => 5, 'categoria_id' => 2, 'titulo' => 'Pollo al Curry', 'descripcion' => 'Curry cremoso de pollo estilo tikka masala con arroz basmati.', 'pasos' => 'Marinar pollo en yogur con especias 2 horas. Sellar el pollo en sartén caliente. Sofreír cebolla, ajo, jengibre y pasta de curry. Añadir tomate triturado y nata. Incorporar el pollo y cocinar 20 min a fuego lento.', 'url_imagen' => 'assets/img/curry.png', 'tiempo_coccion' => 50, 'dificultad' => 'Media'],
+            ['usuario_id' => 5, 'categoria_id' => 2, 'titulo' => 'Ceviche Peruano', 'descripcion' => 'Ceviche fresco de pescado blanco marinado en limón con camote.', 'pasos' => 'Cortar el pescado en cubos de 2cm. Preparar leche de tigre con limón, ají y cilantro. Marinar el pescado 10 minutos. Añadir cebolla morada en juliana. Servir con camote, choclo y cancha.', 'url_imagen' => 'assets/img/ceviche.png', 'tiempo_coccion' => 20, 'dificultad' => 'Media'],
+
+            // --- Laura Saludable (id=6) ---
+            ['usuario_id' => 6, 'categoria_id' => 1, 'titulo' => 'Gazpacho Andaluz', 'descripcion' => 'Sopa fría de tomate perfecta para el verano, refrescante y nutritiva.', 'pasos' => 'Triturar tomates maduros con pepino y pimiento. Añadir ajo, vinagre y pan remojado. Agregar aceite de oliva en hilo mientras tritura. Colar si se desea textura fina. Refrigerar mínimo 2 horas antes de servir.', 'url_imagen' => 'assets/img/gazpacho.jpg', 'tiempo_coccion' => 15, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 6, 'categoria_id' => 1, 'titulo' => 'Salmón Teriyaki', 'descripcion' => 'Salmón glaseado con salsa teriyaki, acompañado de arroz y brócoli.', 'pasos' => 'Preparar salsa teriyaki con soja, mirin y azúcar. Marinar el salmón 30 minutos. Sellar en sartén caliente por ambos lados. Glasear con la salsa reducida. Servir con arroz al vapor y brócoli.', 'url_imagen' => 'assets/img/salmon.png', 'tiempo_coccion' => 25, 'dificultad' => 'Fácil'],
+            ['usuario_id' => 6, 'categoria_id' => 1, 'titulo' => 'Bowl de Quinoa y Verduras', 'descripcion' => 'Bowl nutritivo con quinoa, verduras asadas y aderezo de tahini.', 'pasos' => 'Cocer quinoa en agua con sal. Asar boniato, calabacín y pimiento. Preparar aderezo de tahini con limón. Montar el bowl con base de quinoa. Añadir verduras, aguacate y semillas.', 'url_imagen' => 'assets/img/smoothie.png', 'tiempo_coccion' => 35, 'dificultad' => 'Fácil'],
+
+            // --- Chef Italiano (id=7) ---
+            ['usuario_id' => 7, 'categoria_id' => 2, 'titulo' => 'Pasta Carbonara', 'descripcion' => 'La auténtica carbonara italiana con guanciale, pecorino y pimienta.', 'pasos' => 'Cocer spaghetti al dente en agua con sal. Dorar el guanciale en dados sin aceite. Mezclar yemas con pecorino rallado y pimienta. Escurrir pasta y mezclar con guanciale. Retirar del fuego y añadir mezcla de huevo.', 'url_imagen' => 'assets/img/tortilla.jpg', 'tiempo_coccion' => 20, 'dificultad' => 'Media'],
+            ['usuario_id' => 7, 'categoria_id' => 2, 'titulo' => 'Pizza Margherita Casera', 'descripcion' => 'Pizza napolitana con masa madre, tomate San Marzano y mozzarella fresca.', 'pasos' => 'Preparar masa con harina, agua, levadura y sal. Dejar fermentar 24 horas en nevera. Estirar la masa a mano sin rodillo. Añadir salsa de tomate, mozzarella y albahaca. Hornear a máxima temperatura 8-10 min.', 'url_imagen' => 'assets/img/pizza.png', 'tiempo_coccion' => 15, 'dificultad' => 'Media'],
+            ['usuario_id' => 7, 'categoria_id' => 2, 'titulo' => 'Risotto de Setas', 'descripcion' => 'Risotto cremoso con setas variadas, parmesano y trufa.', 'pasos' => 'Saltear setas variadas con ajo y perejil. Sofreír cebolla y tostar el arroz arborio. Añadir vino blanco y dejar evaporar. Ir añadiendo caldo caliente cucharón a cucharón. Terminar con mantequilla y parmesano.', 'url_imagen' => 'assets/img/risotto.png', 'tiempo_coccion' => 35, 'dificultad' => 'Difícil'],
+
+            // --- Sabor Oriental (id=8) ---
+            ['usuario_id' => 8, 'categoria_id' => 2, 'titulo' => 'Ramen Tonkotsu', 'descripcion' => 'Ramen japonés con caldo de cerdo cremoso, chashu y huevo marinado.', 'pasos' => 'Preparar caldo cocinando huesos de cerdo 12 horas. Cocinar chashu (panceta enrollada) en soja y mirin. Marinar huevos cocidos en salsa de soja. Cocer fideos ramen al dente. Montar con caldo, chashu, huevo, nori y cebolleta.', 'url_imagen' => 'assets/img/ramen.png', 'tiempo_coccion' => 180, 'dificultad' => 'Difícil'],
+            ['usuario_id' => 8, 'categoria_id' => 1, 'titulo' => 'Pad Thai Vegano', 'descripcion' => 'Noodles salteados al wok con tofu, verduras y salsa de tamarindo.', 'pasos' => 'Remojar noodles de arroz en agua caliente. Saltear tofu firme en dados. Preparar salsa con tamarindo, soja y lima. Saltear verduras al wok a fuego alto. Mezclar todo con cacahuetes y cilantro.', 'url_imagen' => 'assets/img/salad.jpg', 'tiempo_coccion' => 20, 'dificultad' => 'Media'],
+            ['usuario_id' => 8, 'categoria_id' => 2, 'titulo' => 'Gyozas Caseras', 'descripcion' => 'Empanadillas japonesas rellenas de cerdo y verduras, selladas a la plancha.', 'pasos' => 'Mezclar cerdo picado con col, jengibre y soja. Rellenar discos de masa wonton. Plegar las gyozas con pliegues decorativos. Sellar en sartén con aceite hasta dorar la base. Añadir agua, tapar y cocinar al vapor 5 min.', 'url_imagen' => 'assets/img/empanadas.png', 'tiempo_coccion' => 30, 'dificultad' => 'Media'],
+        ]);
+
+        // ── Ingredientes ──────────────────────────────────────────
+        DB::table('ingredientes')->insert([
+            ['nombre' => 'Patata'],            // 1
+            ['nombre' => 'Huevo'],             // 2
+            ['nombre' => 'Queso Crema'],       // 3
+            ['nombre' => 'Tomate'],            // 4
+            ['nombre' => 'Costilla de Cerdo'], // 5
+            ['nombre' => 'Arroz'],             // 6
+            ['nombre' => 'Pollo'],             // 7
+            ['nombre' => 'Jamón Ibérico'],     // 8
+            ['nombre' => 'Harina'],            // 9
+            ['nombre' => 'Leche'],             // 10
+            ['nombre' => 'Chocolate Negro'],   // 11
+            ['nombre' => 'Garbanzos'],         // 12
+            ['nombre' => 'Aguacate'],          // 13
+            ['nombre' => 'Salmón'],            // 14
+            ['nombre' => 'Mozzarella'],        // 15
+            ['nombre' => 'Setas'],             // 16
+            ['nombre' => 'Fideos Ramen'],      // 17
+            ['nombre' => 'Cebolla'],           // 18
+            ['nombre' => 'Ajo'],               // 19
+            ['nombre' => 'Aceite de Oliva'],   // 20
+        ]);
+
+        // ── Receta-Ingredientes ───────────────────────────────────
+        DB::table('receta_ingredientes')->insert([
+            // Tortilla de Patatas (1)
+            ['receta_id' => 1, 'ingrediente_id' => 1, 'cantidad' => '4 unidades'],
+            ['receta_id' => 1, 'ingrediente_id' => 2, 'cantidad' => '6 unidades'],
+            ['receta_id' => 1, 'ingrediente_id' => 18, 'cantidad' => '1 unidad'],
+            // Croquetas (2)
+            ['receta_id' => 2, 'ingrediente_id' => 8, 'cantidad' => '200 gramos'],
+            ['receta_id' => 2, 'ingrediente_id' => 9, 'cantidad' => '100 gramos'],
+            ['receta_id' => 2, 'ingrediente_id' => 10, 'cantidad' => '500 ml'],
+            // Paella (3)
+            ['receta_id' => 3, 'ingrediente_id' => 6, 'cantidad' => '400 gramos'],
+            ['receta_id' => 3, 'ingrediente_id' => 7, 'cantidad' => '500 gramos'],
+            // Empanadas (4)
+            ['receta_id' => 4, 'ingrediente_id' => 9, 'cantidad' => '500 gramos'],
+            ['receta_id' => 4, 'ingrediente_id' => 18, 'cantidad' => '2 unidades'],
+            // Tarta de Queso (5)
+            ['receta_id' => 5, 'ingrediente_id' => 3, 'cantidad' => '500 gramos'],
+            ['receta_id' => 5, 'ingrediente_id' => 2, 'cantidad' => '3 unidades'],
+            // Brownie (6)
+            ['receta_id' => 6, 'ingrediente_id' => 11, 'cantidad' => '200 gramos'],
+            ['receta_id' => 6, 'ingrediente_id' => 2, 'cantidad' => '3 unidades'],
+            // Crepes (7)
+            ['receta_id' => 7, 'ingrediente_id' => 9, 'cantidad' => '250 gramos'],
+            ['receta_id' => 7, 'ingrediente_id' => 10, 'cantidad' => '500 ml'],
+            // Hummus (10)
+            ['receta_id' => 10, 'ingrediente_id' => 12, 'cantidad' => '400 gramos'],
+            ['receta_id' => 10, 'ingrediente_id' => 20, 'cantidad' => '3 cucharadas'],
+            // Costillas (13)
+            ['receta_id' => 13, 'ingrediente_id' => 5, 'cantidad' => '1 costillar'],
+            // Salmón Teriyaki (18)
+            ['receta_id' => 18, 'ingrediente_id' => 14, 'cantidad' => '2 lomos'],
+            ['receta_id' => 18, 'ingrediente_id' => 6, 'cantidad' => '200 gramos'],
+            // Pizza (21)
+            ['receta_id' => 21, 'ingrediente_id' => 9, 'cantidad' => '300 gramos'],
+            ['receta_id' => 21, 'ingrediente_id' => 15, 'cantidad' => '200 gramos'],
+            ['receta_id' => 21, 'ingrediente_id' => 4, 'cantidad' => '400 gramos'],
+            // Risotto (22)
+            ['receta_id' => 22, 'ingrediente_id' => 6, 'cantidad' => '320 gramos'],
+            ['receta_id' => 22, 'ingrediente_id' => 16, 'cantidad' => '300 gramos'],
+            // Ramen (23)
+            ['receta_id' => 23, 'ingrediente_id' => 17, 'cantidad' => '400 gramos'],
+            ['receta_id' => 23, 'ingrediente_id' => 2, 'cantidad' => '4 unidades'],
+        ]);
+
+        // ── Comentarios ───────────────────────────────────────────
+        DB::table('comentarios')->insert([
+            // Tortilla
+            ['usuario_id' => 3, 'receta_id' => 1, 'contenido' => '¡Me encanta! La hago cada domingo.'],
+            ['usuario_id' => 5, 'receta_id' => 1, 'contenido' => 'Queda mejor si dejas la patata un poco entera.'],
+            ['usuario_id' => 6, 'receta_id' => 1, 'contenido' => 'Un clásico que nunca falla.'],
+            // Croquetas
+            ['usuario_id' => 4, 'receta_id' => 2, 'contenido' => 'Aunque no como carne, se ven increíbles.'],
+            ['usuario_id' => 7, 'receta_id' => 2, 'contenido' => 'El truco está en la bechamel bien espesa.'],
+            // Tarta de Queso
+            ['usuario_id' => 2, 'receta_id' => 5, 'contenido' => 'Espectacular, me salió a la primera.'],
+            ['usuario_id' => 8, 'receta_id' => 5, 'contenido' => 'La mejor receta de tarta que he probado.'],
+            // Brownie
+            ['usuario_id' => 5, 'receta_id' => 6, 'contenido' => 'Jugoso y potente. ¡Repetimos!'],
+            ['usuario_id' => 6, 'receta_id' => 6, 'contenido' => 'Con helado de vainilla es otro nivel.'],
+            // Ensalada
+            ['usuario_id' => 3, 'receta_id' => 9, 'contenido' => 'Perfecta para verano.'],
+            // Hummus
+            ['usuario_id' => 6, 'receta_id' => 10, 'contenido' => 'Mi snack favorito, lo hago cada semana.'],
+            ['usuario_id' => 2, 'receta_id' => 10, 'contenido' => 'Le pongo un poco de comino y queda genial.'],
+            // Costillas BBQ
+            ['usuario_id' => 2, 'receta_id' => 13, 'contenido' => 'Las mejores costillas que he probado.'],
+            ['usuario_id' => 7, 'receta_id' => 13, 'contenido' => 'El rub de especias marca la diferencia.'],
+            // Pollo al Curry
+            ['usuario_id' => 3, 'receta_id' => 15, 'contenido' => 'Sabor auténtico, como en un restaurante indio.'],
+            ['usuario_id' => 8, 'receta_id' => 15, 'contenido' => 'Probé con leche de coco y queda buenísimo.'],
+            // Gazpacho
+            ['usuario_id' => 4, 'receta_id' => 17, 'contenido' => 'Perfecto para verano, refrescante.'],
+            ['usuario_id' => 3, 'receta_id' => 17, 'contenido' => 'Lo hago en cantidad y dura varios días.'],
+            // Salmón Teriyaki
+            ['usuario_id' => 7, 'receta_id' => 18, 'contenido' => 'Fácil y delicioso, perfecto entre semana.'],
+            // Pizza
+            ['usuario_id' => 2, 'receta_id' => 21, 'contenido' => 'La masa de 24h hace toda la diferencia.'],
+            ['usuario_id' => 5, 'receta_id' => 21, 'contenido' => 'Mejor que las de pizzería, en serio.'],
+            // Risotto
+            ['usuario_id' => 3, 'receta_id' => 22, 'contenido' => 'Cremoso perfecto. Paciencia con el caldo.'],
+            ['usuario_id' => 6, 'receta_id' => 22, 'contenido' => 'Con un toque de trufa es espectacular.'],
+            // Ramen
+            ['usuario_id' => 2, 'receta_id' => 23, 'contenido' => 'Menudo trabajazo pero merece cada minuto.'],
+            ['usuario_id' => 5, 'receta_id' => 23, 'contenido' => 'El caldo queda increíble. Nivel restaurante.'],
+            ['usuario_id' => 6, 'receta_id' => 23, 'contenido' => 'Lo mejor que he cocinado en mi vida.'],
+            // Smoothie Bowl
+            ['usuario_id' => 3, 'receta_id' => 11, 'contenido' => 'Desayuno perfecto, lleno de energía.'],
+            // Paella
+            ['usuario_id' => 7, 'receta_id' => 3, 'contenido' => 'Muy buena, aunque yo le pongo un poco más de azafrán.'],
+            ['usuario_id' => 8, 'receta_id' => 3, 'contenido' => 'Nunca había probado una paella casera tan rica.'],
+            // Crepes
+            ['usuario_id' => 4, 'receta_id' => 7, 'contenido' => 'Las hago con crema de cacahuete en vez de Nutella.'],
+        ]);
+
+        // ── Valoraciones ──────────────────────────────────────────
+        DB::table('valoraciones')->insert([
+            // Tortilla
+            ['usuario_id' => 3, 'receta_id' => 1, 'puntuacion' => 5],
+            ['usuario_id' => 5, 'receta_id' => 1, 'puntuacion' => 4],
+            ['usuario_id' => 6, 'receta_id' => 1, 'puntuacion' => 5],
+            ['usuario_id' => 8, 'receta_id' => 1, 'puntuacion' => 4],
+            // Croquetas
+            ['usuario_id' => 3, 'receta_id' => 2, 'puntuacion' => 5],
+            ['usuario_id' => 7, 'receta_id' => 2, 'puntuacion' => 5],
+            ['usuario_id' => 8, 'receta_id' => 2, 'puntuacion' => 4],
+            // Paella
+            ['usuario_id' => 5, 'receta_id' => 3, 'puntuacion' => 5],
+            ['usuario_id' => 7, 'receta_id' => 3, 'puntuacion' => 5],
+            ['usuario_id' => 8, 'receta_id' => 3, 'puntuacion' => 4],
+            // Empanadas
+            ['usuario_id' => 3, 'receta_id' => 4, 'puntuacion' => 4],
+            ['usuario_id' => 5, 'receta_id' => 4, 'puntuacion' => 5],
+            // Tarta de Queso
+            ['usuario_id' => 2, 'receta_id' => 5, 'puntuacion' => 5],
+            ['usuario_id' => 4, 'receta_id' => 5, 'puntuacion' => 5],
+            ['usuario_id' => 8, 'receta_id' => 5, 'puntuacion' => 5],
+            // Brownie
+            ['usuario_id' => 5, 'receta_id' => 6, 'puntuacion' => 5],
+            ['usuario_id' => 6, 'receta_id' => 6, 'puntuacion' => 4],
+            ['usuario_id' => 2, 'receta_id' => 6, 'puntuacion' => 5],
+            // Crepes
+            ['usuario_id' => 4, 'receta_id' => 7, 'puntuacion' => 4],
+            ['usuario_id' => 6, 'receta_id' => 7, 'puntuacion' => 5],
+            // Tiramisú
+            ['usuario_id' => 2, 'receta_id' => 8, 'puntuacion' => 5],
+            ['usuario_id' => 5, 'receta_id' => 8, 'puntuacion' => 4],
+            // Ensalada
+            ['usuario_id' => 3, 'receta_id' => 9, 'puntuacion' => 4],
+            ['usuario_id' => 6, 'receta_id' => 9, 'puntuacion' => 5],
+            // Hummus
+            ['usuario_id' => 6, 'receta_id' => 10, 'puntuacion' => 5],
+            ['usuario_id' => 2, 'receta_id' => 10, 'puntuacion' => 4],
+            ['usuario_id' => 3, 'receta_id' => 10, 'puntuacion' => 5],
+            // Smoothie Bowl
+            ['usuario_id' => 3, 'receta_id' => 11, 'puntuacion' => 5],
+            ['usuario_id' => 6, 'receta_id' => 11, 'puntuacion' => 5],
+            // Tacos Veganos
+            ['usuario_id' => 6, 'receta_id' => 12, 'puntuacion' => 4],
+            ['usuario_id' => 8, 'receta_id' => 12, 'puntuacion' => 4],
+            // Costillas BBQ
+            ['usuario_id' => 2, 'receta_id' => 13, 'puntuacion' => 5],
+            ['usuario_id' => 7, 'receta_id' => 13, 'puntuacion' => 5],
+            ['usuario_id' => 3, 'receta_id' => 13, 'puntuacion' => 4],
+            // Tacos al Pastor
+            ['usuario_id' => 2, 'receta_id' => 14, 'puntuacion' => 4],
+            ['usuario_id' => 8, 'receta_id' => 14, 'puntuacion' => 5],
+            // Pollo al Curry
+            ['usuario_id' => 3, 'receta_id' => 15, 'puntuacion' => 5],
+            ['usuario_id' => 8, 'receta_id' => 15, 'puntuacion' => 5],
+            ['usuario_id' => 6, 'receta_id' => 15, 'puntuacion' => 4],
+            // Ceviche
+            ['usuario_id' => 2, 'receta_id' => 16, 'puntuacion' => 5],
+            ['usuario_id' => 6, 'receta_id' => 16, 'puntuacion' => 4],
+            // Gazpacho
+            ['usuario_id' => 4, 'receta_id' => 17, 'puntuacion' => 5],
+            ['usuario_id' => 3, 'receta_id' => 17, 'puntuacion' => 5],
+            ['usuario_id' => 2, 'receta_id' => 17, 'puntuacion' => 4],
+            // Salmón Teriyaki
+            ['usuario_id' => 7, 'receta_id' => 18, 'puntuacion' => 5],
+            ['usuario_id' => 4, 'receta_id' => 18, 'puntuacion' => 4],
+            // Bowl Quinoa
+            ['usuario_id' => 4, 'receta_id' => 19, 'puntuacion' => 5],
+            ['usuario_id' => 3, 'receta_id' => 19, 'puntuacion' => 4],
+            // Pasta Carbonara
+            ['usuario_id' => 2, 'receta_id' => 20, 'puntuacion' => 5],
+            ['usuario_id' => 5, 'receta_id' => 20, 'puntuacion' => 5],
+            // Pizza
+            ['usuario_id' => 2, 'receta_id' => 21, 'puntuacion' => 5],
+            ['usuario_id' => 5, 'receta_id' => 21, 'puntuacion' => 5],
+            ['usuario_id' => 3, 'receta_id' => 21, 'puntuacion' => 5],
+            // Risotto
+            ['usuario_id' => 3, 'receta_id' => 22, 'puntuacion' => 5],
+            ['usuario_id' => 6, 'receta_id' => 22, 'puntuacion' => 5],
+            ['usuario_id' => 2, 'receta_id' => 22, 'puntuacion' => 4],
+            // Ramen
+            ['usuario_id' => 2, 'receta_id' => 23, 'puntuacion' => 5],
+            ['usuario_id' => 5, 'receta_id' => 23, 'puntuacion' => 5],
+            ['usuario_id' => 6, 'receta_id' => 23, 'puntuacion' => 5],
+            ['usuario_id' => 3, 'receta_id' => 23, 'puntuacion' => 5],
+            // Pad Thai
+            ['usuario_id' => 4, 'receta_id' => 24, 'puntuacion' => 4],
+            ['usuario_id' => 6, 'receta_id' => 24, 'puntuacion' => 5],
+            // Gyozas
+            ['usuario_id' => 2, 'receta_id' => 25, 'puntuacion' => 5],
+            ['usuario_id' => 7, 'receta_id' => 25, 'puntuacion' => 4],
+        ]);
+
+        // ── Favoritos ─────────────────────────────────────────────
+        DB::table('favoritos')->insert([
+            ['usuario_id' => 2, 'receta_id' => 5],
+            ['usuario_id' => 2, 'receta_id' => 13],
+            ['usuario_id' => 2, 'receta_id' => 23],
+            ['usuario_id' => 3, 'receta_id' => 1],
+            ['usuario_id' => 3, 'receta_id' => 22],
+            ['usuario_id' => 3, 'receta_id' => 15],
+            ['usuario_id' => 4, 'receta_id' => 17],
+            ['usuario_id' => 4, 'receta_id' => 10],
+            ['usuario_id' => 5, 'receta_id' => 3],
+            ['usuario_id' => 5, 'receta_id' => 21],
+            ['usuario_id' => 5, 'receta_id' => 23],
+            ['usuario_id' => 6, 'receta_id' => 6],
+            ['usuario_id' => 6, 'receta_id' => 11],
+            ['usuario_id' => 6, 'receta_id' => 22],
+            ['usuario_id' => 7, 'receta_id' => 1],
+            ['usuario_id' => 7, 'receta_id' => 2],
+            ['usuario_id' => 7, 'receta_id' => 13],
+            ['usuario_id' => 8, 'receta_id' => 3],
+            ['usuario_id' => 8, 'receta_id' => 5],
+            ['usuario_id' => 8, 'receta_id' => 21],
+        ]);
+
+        // ── Seguidores ────────────────────────────────────────────
+        DB::table('seguidores')->insert([
+            ['seguidor_id' => 3, 'seguido_id' => 2],
+            ['seguidor_id' => 4, 'seguido_id' => 6],
+            ['seguidor_id' => 5, 'seguido_id' => 2],
+            ['seguidor_id' => 5, 'seguido_id' => 7],
+            ['seguidor_id' => 6, 'seguido_id' => 4],
+            ['seguidor_id' => 6, 'seguido_id' => 3],
+            ['seguidor_id' => 7, 'seguido_id' => 2],
+            ['seguidor_id' => 7, 'seguido_id' => 5],
+            ['seguidor_id' => 8, 'seguido_id' => 7],
+            ['seguidor_id' => 8, 'seguido_id' => 2],
+            ['seguidor_id' => 2, 'seguido_id' => 7],
+            ['seguidor_id' => 2, 'seguido_id' => 8],
+            ['seguidor_id' => 3, 'seguido_id' => 8],
+        ]);
+
+        $this->command->info('Datos de prueba cargados con éxito: 8 usuarios, 25 recetas, 20 ingredientes.');
     }
 }

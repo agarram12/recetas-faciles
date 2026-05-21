@@ -1,67 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🍳 Recetas Fáciles
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicación web de recetas con feed social, comentarios, valoraciones, favoritos y sistema de seguidores. Construida con Laravel 10, Blade y MySQL.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Arranque con Docker
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Requisitos previos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Docker](https://docs.docker.com/get-docker/) y [Docker Compose](https://docs.docker.com/compose/install/) instalados.
 
-## Learning Laravel
+### 1. Clonar el repositorio
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+git clone https://github.com/tu-usuario/recetas-faciles.git
+cd recetas-faciles
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 2. Copiar el archivo de entorno
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+cp .env.example .env
+```
 
-## Laravel Sponsors
+### 3. Levantar los contenedores
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+docker compose up -d --build
+```
 
-### Premium Partners
+Esto levanta dos servicios:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+| Servicio | Contenedor | Puerto |
+|---|---|---|
+| **app** (PHP 8.3 + Apache) | `recetas-app` | `localhost:8080` |
+| **db** (MySQL 8.0) | `recetas-db` | `localhost:3307` |
 
-## Contributing
+El contenedor de la app:
+- Instala dependencias (Composer + NPM)
+- Compila assets con Vite
+- Ejecuta migraciones automáticamente al arrancar
+- Carga datos iniciales con el seeder
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Acceder a la aplicación
 
-## Code of Conduct
+Abrir en el navegador: **http://localhost:8080**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 5. Ejecutar migraciones manualmente (opcional)
 
-## Security Vulnerabilities
+```bash
+docker exec -it recetas-app php artisan migrate --force
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 6. Otros comandos útiles
 
-## License
+```bash
+# Ver logs de la app
+docker compose logs -f app
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Entrar al contenedor
+docker exec -it recetas-app bash
 
+# Ejecutar seeders
+docker exec -it recetas-app php artisan db:seed
+
+# Ejecutar tinker
+docker exec -it recetas-app php artisan tinker
+
+# Parar los contenedores
+docker compose down
+
+# Parar y borrar volúmenes (resetear BD)
+docker compose down -v
+```
+
+---
+
+## 💻 Arranque local (sin Docker)
+
+### Requisitos
+
+- PHP 8.1+
+- Composer
+- Node.js 20
+- MySQL 8
+
+### Instalación
+
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+npm run build
+php artisan serve
+```
+
+---
+
+## Estructura del proyecto
+
+```
+recetas-faciles/
+├── app/                    # Lógica de la aplicación (Controllers, Models, Services)
+├── database/
+│   ├── migrations/         # Migraciones de la base de datos
+│   ├── seeders/            # Seeders
+│   └── recetas_db.sql      # Datos iniciales (se importa en Docker automáticamente)
+├── resources/views/        # Vistas Blade
+├── routes/                 # Rutas web y API
+├── public/                 # Assets públicos
+├── Dockerfile              # Imagen Docker de la app
+├── docker-compose.yml      # Orquestación de servicios
+├── docker-entrypoint.sh    # Script de arranque del contenedor
+├── docs/                   # Documentación de la comunidad
+│   ├── GUIA_USUARIO.md     # Guía de uso para usuarios finales
+│   ├── NORMAS_COMUNIDAD.md # Normas de la comunidad
+│   ├── MANUAL_MODERACION.md # Manual para administradores
+│   └── img/                # Capturas de pantalla
+└── OPTIMIZACION_SOCIAL.md  # Documentación de optimizaciones RF-16
+```
+
+---
+
+## Usuarios de prueba
+
+Todos los usuarios de prueba tienen la contraseña: `password`
+
+| Email | Nombre | Rol |
+|---|---|---|
+| admin@recetasfaciles.com | Administrador | **Administrador** |
+| antonio@email.com | Antonio Cocinitas | Usuario |
+| maria@email.com | María Chef | Usuario |
+| vegan@email.com | VeganLife | Usuario |
+| carlos@email.com | Carlos Parrilla | Usuario |
+| laura@email.com | Laura Saludable | Usuario |
+
+> El administrador (user_id=1) puede editar y eliminar cualquier receta.
+
+---
+
+## Documentación
+
+| Documento | Descripción |
+|---|---|
+| [Guía de usuario](docs/GUIA_USUARIO.md) | Cómo usar la plataforma paso a paso |
+| [Normas de la comunidad](docs/NORMAS_COMUNIDAD.md) | Reglas de convivencia y contenido |
+| [Manual de moderación](docs/MANUAL_MODERACION.md) | Guía para administradores |
+| [Optimización social](OPTIMIZACION_SOCIAL.md) | Detalle técnico de las optimizaciones |
+
+---
+
+## Licencia
+
+MIT

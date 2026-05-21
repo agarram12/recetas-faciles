@@ -4,19 +4,19 @@
         
         <div class="card-header bg-white border-0 py-2 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <img src="{{ asset($receta->autor_avatar ?? 'assets/img/logo.png') }}" class="rounded-circle me-2" width="30" height="30" style="object-fit: cover;">
+                <img src="{{ asset($receta->autor->avatar ?? 'assets/img/logo.png') }}" class="rounded-circle me-2" width="30" height="30" style="object-fit: cover;">
                 <div>
                     <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;">
-                        <a href="{{ route('usuario.show', $receta->autor_id) }}" class="text-decoration-none text-dark">
-                            {{ $receta->autor_nombre }}
+                        <a href="{{ route('usuario.show', $receta->autor->id) }}" class="text-decoration-none text-dark">
+                            {{ $receta->autor->name }}
                         </a>
                     </h6>
                 </div>
             </div>
 
-            <span class="badge bg-light text-dark border">{{ $receta->categoria_nombre }}</span>
+            <span class="badge bg-light text-dark border">{{ $receta->categoria->nombre }}</span>
 
-            @if(Auth::check() && Auth::id() == $receta->usuario_id)
+            @if(Auth::check() && (Auth::id() == $receta->usuario_id || Auth::id() == 1))
             <div class="d-flex gap-2">
                 <a href="{{ route('receta.edit', $receta->id) }}" class="btn btn-link text-primary p-0 border-0 text-decoration-none">
                     <i class="bi bi-pencil-square"></i>

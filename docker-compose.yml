@@ -1,0 +1,61 @@
+services:
+  # --- Aplicación Laravel (PHP + Apache) ---
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recetas-app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    environment:
+      - APP_NAME=RecetasFaciles
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8080
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=recetas_db
+      - DB_USERNAME=recetas_user
+      - DB_PASSWORD=recetas_pass
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - LOG_CHANNEL=stack
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - recetas-net
+
+  # --- Base de datos MySQL ---
+  db:
+    image: mysql:8.0
+    container_name: recetas-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: recetas_db
+      MYSQL_USER: recetas_user
+      MYSQL_PASSWORD: recetas_pass
+    volumes:
+      - recetas-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_pass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - recetas-net
+
+volumes:
+  recetas-db-data:
+    driver: local
+
+networks:
+  recetas-net:
+    driver: bridge

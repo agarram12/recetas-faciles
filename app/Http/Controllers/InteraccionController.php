@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Comentario;
 use App\Models\Receta;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Valoracion;
 use App\Notifications\NuevoComentario;
 use App\Notifications\NuevaValoracion;
@@ -29,7 +30,7 @@ class InteraccionController extends Controller
             'contenido' => $request->contenido
         ]);
 
-        $receta = Receta::findOrFail($id);
+        $receta = Receta::with('autor')->findOrFail($id);
         if ($receta->usuario_id !== Auth::id()) {
             $receta->autor->notify(new NuevoComentario(
                 Auth::user(),
@@ -68,7 +69,7 @@ class InteraccionController extends Controller
             ['puntuacion' => $request->puntuacion]
         );
 
-        $receta = Receta::findOrFail($id);
+        $receta = Receta::with('autor')->findOrFail($id);
         if ($receta->usuario_id !== Auth::id()) {
             $receta->autor->notify(new NuevaValoracion(
                 Auth::user(),
@@ -76,6 +77,9 @@ class InteraccionController extends Controller
                 $valoracion->puntuacion
             ));
         }
+
+        // Invalidar caché de populares (el ranking puede cambiar)
+        Cache::forget('recetas_populares');
 
 
         if ($request->ajax()) {

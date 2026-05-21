@@ -28,5 +28,13 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
+
+        $user = \App\Models\User::where('email', 'test@example.com')->first();
+        $this->assertNotNull($user);
+        $this->assertCount(1, $user->notifications);
+        
+        $notification = $user->notifications->first();
+        $this->assertEquals('bienvenida', $notification->data['tipo']);
+        $this->assertEquals('¡Te damos la bienvenida a Recetas Fáciles! Esperamos que disfrutes de la app.', $notification->data['mensaje']);
     }
 }

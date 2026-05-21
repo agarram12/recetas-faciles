@@ -81,7 +81,7 @@ class ProfileController extends Controller
 
     public function seguidores(User $user): View
     {
-        $seguidores = $user->seguidores()->with('seguidores')->paginate(20);
+        $seguidores = $user->seguidores()->paginate(20);
 
         return view('usuario.seguidores', [
             'usuario' => $user,
@@ -91,7 +91,7 @@ class ProfileController extends Controller
 
     public function seguidos(User $user): View
     {
-        $seguidos = $user->seguidos()->with('seguidos')->paginate(20);
+        $seguidos = $user->seguidos()->paginate(20);
 
         return view('usuario.seguidos', [
             'usuario' => $user,

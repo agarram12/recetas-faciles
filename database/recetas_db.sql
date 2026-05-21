@@ -62,6 +62,7 @@ CREATE TABLE favoritos (
 );
 
 INSERT INTO users (name, email, password, descripcion) VALUES 
+('Administrador', 'admin@recetasfaciles.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Administrador de la plataforma.'),
 ('Antonio Cocinitas', 'antonio@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Amante de lo tradicional.'),
 ('María Chef', 'maria@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Especialista en postres.'),
 ('VeganLife', 'vegan@email.com', '$2y$10$eNY72D/UErU3AH2AEMm9h.l1STMRM5LoN/r4NcEMOz6bongzaGOl2', 'Recetas 100% plant-based.'),
@@ -74,11 +75,11 @@ INSERT INTO categorias (nombre, descripcion) VALUES
 ('Dulceros', 'Postres y delicias para los más golosos.');
 
 INSERT INTO recetas (usuario_id, categoria_id, titulo, pasos, url_imagen, tiempo_coccion, dificultad) VALUES 
-(1, 1, 'Tortilla de Patatas', 'Freír patatas y mezclar con huevo.', 'assets/img/tortilla.jpg', 40, 'Media'),
-(2, 3, 'Tarta de Queso', 'Triturar galletas y mezclar con queso.', 'assets/img/cheesecake.jpg', 50, 'Fácil'),
-(3, 1, 'Ensalada Fresca', 'Lavar lechuga, cortar tomate y aliñar.', 'assets/img/salad.jpg', 10, 'Fácil'),
-(4, 2, 'Costillas BBQ', 'Adobar y hornear a baja temperatura.', 'assets/img/bbq.jpg', 120, 'Media'),
-(5, 1, 'Gazpacho Andaluz', 'Triturar tomate, pimiento, pepino y ajo.', 'assets/img/gazpacho.jpg', 15, 'Fácil');
+(2, 1, 'Tortilla de Patatas', 'Freír patatas y mezclar con huevo.', 'assets/img/tortilla.jpg', 40, 'Media'),
+(3, 3, 'Tarta de Queso', 'Triturar galletas y mezclar con queso.', 'assets/img/cheesecake.jpg', 50, 'Fácil'),
+(4, 1, 'Ensalada Fresca', 'Lavar lechuga, cortar tomate y aliñar.', 'assets/img/salad.jpg', 10, 'Fácil'),
+(5, 2, 'Costillas BBQ', 'Adobar y hornear a baja temperatura.', 'assets/img/bbq.jpg', 120, 'Media'),
+(6, 1, 'Gazpacho Andaluz', 'Triturar tomate, pimiento, pepino y ajo.', 'assets/img/gazpacho.jpg', 15, 'Fácil');
 
 INSERT INTO ingredientes (nombre) VALUES 
 ('Patata'), ('Huevo'), ('Queso Crema'), ('Tomate'), ('Costilla de Cerdo');
@@ -87,10 +88,10 @@ INSERT INTO receta_ingredientes (receta_id, ingrediente_id, cantidad) VALUES
 (1, 1, '4 unidades'), (1, 2, '6 unidades'), (2, 3, '500 gramos'), (5, 4, '1 kilo'), (4, 5, '1 costillar');
 
 INSERT INTO comentarios (usuario_id, receta_id, contenido) VALUES 
-(2, 1, 'Me encanta.'), (3, 5, 'Perfecto para verano.'), (1, 4, 'Buena salsa.'), (4, 2, 'Voló rápido.'), (5, 3, 'Sana y ligera.');
+(3, 1, 'Me encanta.'), (4, 5, 'Perfecto para verano.'), (2, 4, 'Buena salsa.'), (5, 2, 'Voló rápido.'), (6, 3, 'Sana y ligera.');
 
 INSERT INTO valoraciones (usuario_id, receta_id, puntuacion) VALUES 
-(2, 1, 5), (3, 5, 5), (1, 4, 4), (4, 2, 5), (5, 3, 4);
+(3, 1, 5), (4, 5, 5), (2, 4, 4), (5, 2, 5), (6, 3, 4);
 
 INSERT INTO favoritos (usuario_id, receta_id) VALUES 
-(1, 4), (2, 1), (3, 5), (4, 2), (5, 3);
+(2, 4), (3, 1), (4, 5), (5, 2), (6, 3);

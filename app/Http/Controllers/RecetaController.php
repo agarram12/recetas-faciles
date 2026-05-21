@@ -8,7 +8,7 @@ use App\Http\Requests\RecetaStoreRequest;
 use App\Http\Requests\RecetaUpdateRequest;
 use App\Services\ImagenRecetaService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class RecetaController extends Controller
 {
@@ -31,24 +31,19 @@ class RecetaController extends Controller
         $tiempo     = $request->input('tiempo');
         $orden      = $request->input('orden', 'recientes');
 
-        $query = DB::table('recetas')
-            ->join('users', 'recetas.usuario_id', '=', 'users.id')
-            ->join('categorias', 'recetas.categoria_id', '=', 'categorias.id')
-            ->select(
-                'recetas.*',
-                'users.id as autor_id',
-                'users.name as autor_nombre',
-                'users.avatar as autor_avatar',
-                'categorias.nombre as categoria_nombre'
-            );
+        $query = Receta::with(['autor', 'categoria']);
 
         // Filtro por búsqueda de texto
         if ($buscar) {
             $query->where(function ($sub) use ($buscar) {
                 $sub->where('recetas.titulo', 'LIKE', '%' . $buscar . '%')
                     ->orWhere('recetas.descripcion', 'LIKE', '%' . $buscar . '%')
-                    ->orWhere('users.name', 'LIKE', '%' . $buscar . '%')
-                    ->orWhere('categorias.nombre', 'LIKE', '%' . $buscar . '%');
+                    ->orWhereHas('autor', function ($q) use ($buscar) {
+                        $q->where('name', 'LIKE', '%' . $buscar . '%');
+                    })
+                    ->orWhereHas('categoria', function ($q) use ($buscar) {
+                        $q->where('nombre', 'LIKE', '%' . $buscar . '%');
+                    });
             });
         }
 
@@ -109,7 +104,7 @@ class RecetaController extends Controller
             $html = '';
             foreach ($recetas as $receta) {
                 $html .= view('partials.receta-card', [
-                    'receta' => $receta,
+                    'receta'      => $receta,
                     'favoritoIds' => $favoritoIds,
                 ])->render();
             }
@@ -122,13 +117,18 @@ class RecetaController extends Controller
             ]);
         }
 
-        // Datos para los filtros del sidebar
-        $categorias = \App\Models\Categoria::all();
+        // Datos para los filtros del sidebar (cacheados)
+        $categorias = Cache::remember('categorias_all', 3600, function () {
+            return \App\Models\Categoria::all();
+        });
 
-        $populares = Receta::withAvg('valoraciones', 'puntuacion')
-            ->orderBy('valoraciones_avg_puntuacion', 'desc')
-            ->limit(3)
-            ->get();
+        $populares = Cache::remember('recetas_populares', 3600, function () {
+            return Receta::with('autor')
+                ->withAvg('valoraciones', 'puntuacion')
+                ->orderBy('valoraciones_avg_puntuacion', 'desc')
+                ->limit(3)
+                ->get();
+        });
 
         return view('index', [
             'recetas'     => $recetas,
@@ -146,7 +146,9 @@ class RecetaController extends Controller
     // Formulario para crear una receta
     public function create()
     {
-        $categorias = \App\Models\Categoria::all();
+        $categorias = Cache::remember('categorias_all', 3600, function () {
+            return \App\Models\Categoria::all();
+        });
         return view('crear', ['categorias' => $categorias]);
     }
 
@@ -184,25 +186,27 @@ class RecetaController extends Controller
             'imagenes_pasos' => !empty($imagenesPasos) ? $imagenesPasos : null,
         ]);
 
+        // Invalidar cachés afectadas
+        Cache::forget('recetas_populares');
+
         return redirect('/')->with('success', 'Receta creada correctamente');
     }
 
     public function show($id)
     {
-        // Cargar receta y comentarios
-        $receta = Receta::with(['autor', 'categoria'])->findOrFail($id);
-        $comentarios = \App\Models\Comentario::with('autor')
-            ->where('receta_id', $id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Cargar receta con relaciones y agregados en una sola query
+        $receta = Receta::with(['autor', 'categoria', 'comentarios.autor'])
+            ->withAvg('valoraciones', 'puntuacion')
+            ->withCount('comentarios')
+            ->findOrFail($id);
 
-        // Calcular la media
-        $media = \App\Models\Valoracion::where('receta_id', $id)->avg('puntuacion') ?? 0;
+        // La media viene del withAvg
+        $media = $receta->valoraciones_avg_puntuacion ?? 0;
 
         return view('detalle', [
-            'receta' => $receta,
-            'comentarios' => $comentarios,
-            'media' => $media
+            'receta'      => $receta,
+            'comentarios' => $receta->comentarios->sortByDesc('created_at'),
+            'media'       => $media,
         ]);
     }
 
@@ -223,6 +227,9 @@ class RecetaController extends Controller
 
         $receta->delete();
 
+        // Invalidar cachés afectadas
+        Cache::forget('recetas_populares');
+
         return redirect('/')->with('success', 'Receta eliminada.');
     }
 
@@ -234,7 +241,9 @@ class RecetaController extends Controller
             abort(403, 'No tienes permiso para editar esta receta.');
         }
 
-        $categorias = \App\Models\Categoria::all();
+        $categorias = Cache::remember('categorias_all', 3600, function () {
+            return \App\Models\Categoria::all();
+        });
 
         return view('editar', [
             'receta' => $receta, 
@@ -287,6 +296,9 @@ class RecetaController extends Controller
             'dificultad'     => $request->dificultad,
             'imagenes_pasos' => !empty($imagenesPasos) ? $imagenesPasos : null,
         ]);
+
+        // Invalidar cachés afectadas
+        Cache::forget('recetas_populares');
 
         return redirect('/receta/' . $id)->with('success', 'Receta actualizada.');
     }
