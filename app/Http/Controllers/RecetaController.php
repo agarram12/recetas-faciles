@@ -31,6 +31,15 @@ class RecetaController extends Controller
         $tiempo     = $request->input('tiempo');
         $orden      = $request->input('orden', 'recientes');
 
+        // Búsqueda de creadores coincidentes
+        $usuariosEncontrados = [];
+        if ($buscar) {
+            $usuariosEncontrados = \App\Models\User::where('name', 'LIKE', '%' . $buscar . '%')
+                ->withCount('recetas')
+                ->limit(3)
+                ->get();
+        }
+
         $query = Receta::with(['autor', 'categoria']);
 
         // Filtro por búsqueda de texto
@@ -102,6 +111,12 @@ class RecetaController extends Controller
         // Si es petición AJAX, devolver solo las cards HTML
         if ($request->ajax()) {
             $html = '';
+
+            // Si hay búsqueda y creadores coincidentes en la primera página
+            if ($buscar && count($usuariosEncontrados) > 0 && $request->input('page', 1) == 1) {
+                $html .= view('partials.creadores-busqueda', ['usuarios' => $usuariosEncontrados])->render();
+            }
+
             foreach ($recetas as $receta) {
                 $html .= view('partials.receta-card', [
                     'receta'      => $receta,
@@ -140,6 +155,7 @@ class RecetaController extends Controller
             'dificultad'  => $dificultad,
             'tiempo'      => $tiempo,
             'orden'       => $orden,
+            'usuariosEncontrados' => $usuariosEncontrados,
         ]);
     }
 

@@ -207,6 +207,12 @@
 
             {{-- Feed de recetas --}}
             <div id="feedContainer" class="row g-3">
+                @if($buscar && count($usuariosEncontrados) > 0)
+                    <div class="col-12 mb-2">
+                        @include('partials.creadores-busqueda', ['usuarios' => $usuariosEncontrados])
+                    </div>
+                @endif
+
                 @foreach($recetas as $receta)
                     @include('partials.receta-card', ['receta' => $receta, 'favoritoIds' => $favoritoIds])
                 @endforeach
