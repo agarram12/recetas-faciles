@@ -116,7 +116,7 @@
                                         </label>
                                         <select name="dificultad" id="filtroDificultad" class="form-select cursor-pointer" onchange="this.form.submit()">
                                             <option value="">Cualquiera</option>
-                                            @foreach(['Fácil' => '🟢 Fácil', 'Media' => '🟡 Media', 'Difícil' => '🔴 Difícil'] as $nivel => $etiqueta)
+                                            @foreach(['Fácil' => 'Fácil', 'Media' => 'Media', 'Difícil' => 'Difícil'] as $nivel => $etiqueta)
                                                 <option value="{{ $nivel }}" {{ $dificultad === $nivel ? 'selected' : '' }}>
                                                     {{ $etiqueta }}
                                                 </option>
@@ -131,7 +131,7 @@
                                         </label>
                                         <select name="tiempo" id="filtroTiempo" class="form-select cursor-pointer" onchange="this.form.submit()">
                                             <option value="">Cualquiera</option>
-                                            @foreach(['rapido' => '⚡ Rápido (≤15 min)', 'medio' => '🕐 Medio (16-45 min)', 'largo' => '🕑 Largo (46-90 min)', 'elaborado' => '👨‍🍳 Elaborado (+90 min)'] as $clave => $etiqueta)
+                                            @foreach(['rapido' => 'Rápido (≤15 min)', 'medio' => 'Medio (16-45 min)', 'largo' => 'Largo (46-90 min)', 'elaborado' => 'Elaborado (+90 min)'] as $clave => $etiqueta)
                                                 <option value="{{ $clave }}" {{ $tiempo === $clave ? 'selected' : '' }}>
                                                     {{ $etiqueta }}
                                                 </option>
@@ -145,7 +145,7 @@
                                             <i class="bi bi-sort-down text-success me-1"></i> Ordenar por
                                         </label>
                                         <select name="orden" id="filtroOrden" class="form-select cursor-pointer" onchange="this.form.submit()">
-                                            @foreach(['recientes' => '🆕 Más recientes', 'antiguos' => '📅 Más antiguos', 'rapidos' => '⏱️ Menos tiempo', 'lentos' => '🍲 Más tiempo'] as $clave => $etiqueta)
+                                            @foreach(['recientes' => 'Más recientes', 'antiguos' => 'Más antiguos', 'rapidos' => 'Menos tiempo', 'lentos' => 'Más tiempo'] as $clave => $etiqueta)
                                                 <option value="{{ $clave }}" {{ $orden === $clave ? 'selected' : '' }}>
                                                     {{ $etiqueta }}
                                                 </option>
