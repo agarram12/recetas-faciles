@@ -339,9 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isLoading = false;
     let hasMore = {{ $recetas->hasMorePages() ? 'true' : 'false' }};
 
-    // ============================================
     // INFINITE SCROLL con IntersectionObserver
-    // ============================================
     if (infiniteLoader) {
         const observer = new IntersectionObserver(function(entries) {
             if (entries[0].isIntersecting && hasMore && !isLoading) {
