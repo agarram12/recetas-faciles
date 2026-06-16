@@ -80,7 +80,11 @@ class RecetaController extends Controller
         if (!$buscar && !$categoria && !$dificultad && !$tiempo && Auth::check()) {
             /** @var \App\Models\User $user */
             $user = Auth::user();
-            $seguidos = $user->seguidos()->pluck('seguido_id')->toArray();
+
+            // T22: Optimización - Cachear IDs de seguidos para evitar consulta repetitiva
+            $seguidos = Cache::remember("seguidos_user_{$user->id}", 3600, function() use ($user) {
+                return $user->seguidos()->pluck('seguido_id')->toArray();
+            });
 
             if (! empty($seguidos)) {
                 $query->where(function ($sub) use ($seguidos) {

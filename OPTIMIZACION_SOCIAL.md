@@ -44,10 +44,12 @@ Migración: `2026_05_21_000001_add_optimization_indexes.php`
 |---|---|---|---|
 | `categorias_all` | 60 min | Todas las categorías | Manual (raramente cambian) |
 | `recetas_populares` | 60 min | Top 3 recetas por valoración media | Al crear/actualizar/borrar receta o al valorar |
+| `seguidos_user_{id}` | 60 min | IDs de los usuarios que sigue el usuario | Al seguir/dejar de seguir a alguien |
 
 Se invalidan con `Cache::forget()` en:
 - `RecetaController::store()`, `update()`, `destroy()`
 - `InteraccionController::valorar()`
+- `ProfileController::toggleFollow()` (invalidación de `seguidos_user_{id}`)
 
 ---
 

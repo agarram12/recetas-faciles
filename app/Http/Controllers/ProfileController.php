@@ -110,6 +110,9 @@ class ProfileController extends Controller
         $estaSeguido = $auth->sigueA($user);
         $auth->seguidos()->toggle($user->id);
 
+        // T22: Invalidar caché de seguidos del usuario
+        \Illuminate\Support\Facades\Cache::forget("seguidos_user_{$auth->id}");
+
         if (! $estaSeguido) {
             $user->notify(new \App\Notifications\NuevoSeguidor($auth));
         }
